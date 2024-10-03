@@ -1,8 +1,17 @@
 from abc import ABC
+from src.business_object.segment import Segment
 
 
 class Zonage(ABC):
-    def __init__(self, nom: str, coord: list, edition_carte: int):
+    def __init__(
+        self,
+        nom: str,
+        perimetre: list(Segment),
+        creux: list(Segment),
+        edition_carte: int
+    ):
+
         self.nom = nom
-        self.coord = coord
+        self.perimetre = perimetre
+        self.creux = creux
         self.edition_carte = edition_carte
