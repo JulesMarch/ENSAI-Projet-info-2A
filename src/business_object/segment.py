@@ -7,19 +7,24 @@ class Segment:
         self.p2 = p2
 
     def get_coef_directeur(self) -> float:
+
+        # Si la droite est verticale, il n'y a pas de coefficient directeur
+        if self.p1.x == self.p2.x:
+            return None
+
         return (self.p2.y - self.p1.y)/(self.p2.x - self.p1.x)
 
     def get_ordonnee_origine(self) -> float:
         a = self.get_coef_direct()
         return self.p1.y - a*self.p1.x
 
-    def intersecte(self, seg: Segment) -> bool:
+    def intersecte(self, seg) -> bool:
 
         # On récupère les paramètres des droites qui portent les segments
         a1, b1 = self.get_coef_directeur(), self.get_ordonnee_origine()
         a2, b2 = seg.get_coef_directeur(), seg.get_ordonnee_origine()
 
-        # On regarde d'abord si les droites se coupent 
+        # On regarde d'abord si les droites se coupent
         if a1 == a2:
             if b1 == b2:
                 # Les droites sont confondues
