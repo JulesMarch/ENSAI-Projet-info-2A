@@ -1,5 +1,6 @@
 from abc import ABC
 from src.business_object.segment import Segment
+from src.business_object.point import Point
 
 
 class Zonage(ABC):
@@ -15,3 +16,17 @@ class Zonage(ABC):
         self.perimetre = perimetre
         self.creux = creux
         self.edition_carte = edition_carte
+
+    def appartient_zonage(self, p):
+        # Construction de la demi-droite
+        p2 = Point(x=p.x, y=10000)
+        DD = Segment(p, p2)
+        # Détection du nb d'intersections
+        nb_inters = 0
+        for contour in self.perimetre:
+            nb_inters += contour.comptage_inters(DD)
+        # Est-ce que le point appartient au zonage ?
+        if nb_inters//2 == 1:
+            return True
+        else:
+            return False
