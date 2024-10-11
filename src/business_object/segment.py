@@ -18,7 +18,7 @@ class Segment:
         a = self.get_coef_direct()
         return self.p1.y - a*self.p1.x
 
-    def intersecte(self, seg) -> bool:
+    def detec_inters(self, seg) -> bool:
 
         # On récupère les paramètres des droites qui portent les segments
         a1, b1 = self.get_coef_directeur(), self.get_ordonnee_origine()
