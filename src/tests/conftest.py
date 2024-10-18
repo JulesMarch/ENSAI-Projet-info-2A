@@ -1,7 +1,5 @@
 import src.business_object
 import pytest 
+import fiona
 
-
-def pytest_configure():
-
-    pytest.point1
+fiona.open()
