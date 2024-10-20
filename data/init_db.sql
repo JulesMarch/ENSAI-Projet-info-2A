@@ -8,7 +8,8 @@ CREATE SCHEMA projet;
 DROP TABLE IF EXISTS projet.point CASCADE ;
 CREATE TABLE projet.point (
     id_point serial PRIMARY KEY,
-    coordonnee int
+    x int,
+    y int
 );
 
 
@@ -18,9 +19,9 @@ CREATE TABLE projet.point (
 
 DROP TABLE IF EXISTS projet.association_polygone_point;
 
-CREATE table projet.association_point (
+CREATE table projet.association_polygone_point (
     id_point integer references projet.point(id_point),
-    id_polygone integer REFERENCES projet.polygone(id_polygone),
+    id_polygone integer references projet.polygone(id_polygone),
     ordre serial
 );
 
@@ -46,7 +47,7 @@ CREATE TABLE projet.association_connexe_polygone (
 	id_polygone integer REFERENCES tp.polygone(id_polygone),
     id_comp_connexe integer REFERENCES tp.comp_connexe(id_comp_connexe),
     ordre sequence
-    creu boolean
+    creux boolean
 );
 
 
