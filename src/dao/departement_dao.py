@@ -15,7 +15,8 @@ class DepartementDao(metaclass=Singleton):
                 cursor.execute(request)
                 res = cursor.fetchone()
 
-        informations = f"Le numéro INSEE {res["code_insee"]} correspond au"
-                       f"département {res["nom"]} situé en"
-                       f"{res["niveau_superieur"]}"
+        informations = (
+            f"Le numéro INSEE {res['code_insee']} correspond au"
+            f"département {res['nom']} situé en"
+            f"{res['niveau_superieur']}")
         return informations

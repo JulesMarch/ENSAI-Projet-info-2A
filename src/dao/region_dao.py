@@ -15,6 +15,10 @@ class RegionDao(metaclass=Singleton):
                 cursor.execute(request)
                 res = cursor.fetchone()
 
-        informations = f"Le numéro INSEE {res["code_insee"]} correspond à la"
-                       f"région {res["nom"]}"
-        return pokemons
+        informations = (
+            f"Le numéro INSEE {res['code_insee']} correspond à la "
+            f"région {res['nom']}")
+
+        print(informations)
+
+        return informations

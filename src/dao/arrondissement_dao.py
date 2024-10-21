@@ -2,7 +2,7 @@ from utils.singleton import Singleton
 from dao.db_connection import DBConnection
 
 
-class CommuneDao(metaclass=Singleton):
+class ArrondissementDao(metaclass=Singleton):
     def find_by_code(self, niveau: str, code: int):
         request = (
             f"SELECT code_insee, nom, zone_superieur"
@@ -16,6 +16,6 @@ class CommuneDao(metaclass=Singleton):
                 res = cursor.fetchone()
 
         informations = (
-            f"Le code postal {res['code_insee']} correspond à la"
+            f"Le code {res['code_insee']} correspond à l'arrondissement"
             f"commune {res['nom']} situé en {res['niveau_superieur']}")
         return informations
