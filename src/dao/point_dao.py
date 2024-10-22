@@ -26,7 +26,7 @@ class PointDao(metaclass=Singleton):
                         "END $$;                                            "
 
                         "INSERT INTO projet.point (id_point, x, y) VALUES   "
-                        " (nextval('seq_id_point'), %(x)s, %(y)s)           ",
+                        " (nextval('seq_id_point'), %(x)s, %(y)s) on conflict (x, y) do nothing",
                         {
                             "x": point[0],
                             "y": point[1],

@@ -1,11 +1,6 @@
 # from utils.singleton import Singleton
-<<<<<<< HEAD
-from dao.db_connection import DBConnection
-from zonage_dao import ZonageDao
-=======
 from src.dao.db_connection import DBConnection
 from src.dao.zonage_dao import ZonageDao
->>>>>>> 7d24393bb356e64b5eb4a1415fe75d86591f77f7
 # from src.business_object.region import Region
 
 
