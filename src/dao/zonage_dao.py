@@ -1,9 +1,8 @@
 from src.utils.singleton import Singleton
 from src.dao.db_connection import DBConnection
-# from src.business_object.point import Point
 
 
-niveaux = ["region", "departement", "commune", "arrondissement", "IRIS"]
+niveaux = ["Région", "Département", "Commune", "Arrondissement", "IRIS"]
 
 
 class ZonageDao(metaclass=Singleton):
@@ -13,31 +12,30 @@ class ZonageDao(metaclass=Singleton):
             (works only if the zone is not already in the database)
         """
 
-        if not ZoneDao.est_dans(zone):
+        # if not ZonageDao.est_dans(zone):
 
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "DO $$                                              "
-                        "BEGIN                                              "
-                        "   IF NOT EXISTS (SELECT 1 FROM pg_class           "
-                        "WHERE relname = 'seq_id_zone_geo') THEN"
-                        "   EXECUTE 'CREATE SEQUENCE seq_id_zone_geo';      "
-                        "   END IF;                                         "
-                        "END $$;                                            "
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DO $$                                              "
+                    "BEGIN                                              "
+                    "   IF NOT EXISTS (SELECT 1 FROM pg_class           "
+                    "WHERE relname = 'seq_id_zone_geo') THEN"
+                    "   EXECUTE 'CREATE SEQUENCE seq_id_zone_geo';      "
+                    "   END IF;                                         "
+                    "END $$;                                            "
 
-                        "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
-                        " code_insee, niveau_superieur) VALUES              "
-                        " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s  "
-                        " %(code_insee)s, %(niveau_superieur)s)             ",
-                        {
-                            "nom": zone["NOM"],
-                            "niveau": "Région",
-                            "code_insee": zone["INSEE_REG"],
-                            "niveau_superieur": "Null"
-                        },
-                    )
-
+                    "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
+                    " code_insee, niveau_superieur) VALUES              "
+                    " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s, "
+                    " %(code_insee)s, %(niveau_superieur)s)             ",
+                    {
+                        "nom": zone["NOM"],
+                        "niveau": "Région",
+                        "code_insee": zone["INSEE_REG"],
+                        "niveau_superieur": "Null"
+                    },
+                )
 
     def est_dans(zone: dict) -> bool:
         """
