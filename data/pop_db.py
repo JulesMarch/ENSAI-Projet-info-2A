@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-print("ouais ouais ouais pop_db marche")
-=======
 import fiona
 
 from src.dao.region_dao import RegionDao
@@ -38,7 +35,7 @@ with fiona.open(
 
     schema = shapefile.schema
     print(schema)
-    for element in shapefile: 
+    for element in shapefile:
         properties = element["properties"]
         print(properties)
         DepartementDao.add_zone_geo(properties)
@@ -56,8 +53,7 @@ with fiona.open(
 
     schema = shapefile.schema
     print(schema)
-    for element in shapefile: 
+    for element in shapefile:
         properties = element["properties"]
         print(properties)
         CommuneDao.add_zone_geo(properties)
->>>>>>> 7d24393bb356e64b5eb4a1415fe75d86591f77f7
