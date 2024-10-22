@@ -106,10 +106,11 @@ class ZonageDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "select * from projet.zone_geo                      "
-                    " where code_insee=%(code_insee)s and niveau=%(niveau)s",
+                    "select * from projet.zone_geo                          "
+                    " where code_insee=%(code_insee)s and niveau=%(niveau)s ",
                     {
-                        "code_insee": code_insee
+                        "code_insee": code_insee,
+                        "niveau": niveau
                     },
                 )
                 res = cursor.fetchall()
@@ -125,3 +126,9 @@ class ZonageDao(metaclass=Singleton):
             resultat_final.append(infos)
 
         return resultat_final
+
+# test = ZonageDao.find_by_nom("Gironde", "Département")
+# print(test)
+
+test2 = ZonageDao.find_by_code_insee("34138", "Commune")
+print(test2)
