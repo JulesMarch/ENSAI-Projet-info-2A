@@ -47,8 +47,8 @@ DROP TABLE IF EXISTS projet.point CASCADE ;
 
 CREATE TABLE projet.point (
     id_point serial PRIMARY KEY,
-    x float,
-    y float,
+    x real,
+    y real,
     unique(x, y)
 );
 

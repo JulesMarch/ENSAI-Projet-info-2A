@@ -1,5 +1,5 @@
 import fiona
-from src.dao.point_dao import PointDao
+from src.dao.zonage_dao import ZonageDao
 
 
 with fiona.open(
@@ -13,3 +13,5 @@ with fiona.open(
 
     schema = shapefile.schema
     print(schema)
+
+    properties = shapefile["properties"]

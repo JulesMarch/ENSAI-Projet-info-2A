@@ -6,7 +6,61 @@ from src.business_object.point import Point
 
 
 class ZonageDao(metaclass=Singleton):
-    def add_zone_geo()
+    def add_zone_geo(zone: dict):
+        """
+        Add a geographical zone to the database
+            (works only if the zone is not already in the database)
+        """
+
+        if not ZoneDao.est_dans(zone):
+
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "DO $$                                              "
+                        "BEGIN                                              "
+                        "   IF NOT EXISTS (SELECT 1 FROM pg_class           "
+                        "WHERE relname = 'seq_id_zone_geo') THEN"
+                        "   EXECUTE 'CREATE SEQUENCE seq_id_zone_geo';      "
+                        "   END IF;                                         "
+                        "END $$;                                            "
+
+                        "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
+                        " code_insee, niveau_superieur) VALUES              "
+                        " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s  "
+                        " %(code_insee)s, %(niveau_superieur)s)             "
+                        ,
+                        {
+                            "nom": zone["NOM"],
+                            "niveau": "Région",
+                            "code_insee": zone["INSEE_REG"],
+                            "niveau_superieur": "Null"
+                        },
+                    )
+
+
+    def est_dans(zone: dict) -> bool:
+        """
+        Tell if a geographical zone is in the database
+        """
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select * from projet.point                          "
+                    "   where nom, niveau, code_insee                    ",
+                    {
+                        "nom": zone["NOM"],
+                        "y": point[1],
+                    },
+                )
+                res = cursor.fetchone()
+
+        if res:
+
+            return True
+
+        return False
 
 
     def find_by_nom(nom: str):
@@ -28,7 +82,7 @@ class ZonageDao(metaclass=Singleton):
                 res = cursor.fetchone()
 
         if res: 
-
+            pass
 
             
     def find_by_code_insee(code_insee: str):
