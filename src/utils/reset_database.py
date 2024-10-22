@@ -1,5 +1,5 @@
-from utils.singleton import Singleton
-from dao.db_connection import DBConnection
+from src.utils.singleton import Singleton
+from src.dao.db_connection import DBConnection
 
 
 class ResetDatabase(metaclass=Singleton):
@@ -13,7 +13,7 @@ class ResetDatabase(metaclass=Singleton):
         init_db = open("data/init_db.sql", encoding="utf-8")
         init_db_as_string = init_db.read()
 
-        pop_db = open("data/pop_db.sql", encoding="utf-8")
+        pop_db = open("data/pop_db.py", encoding="utf-8")
         pop_db_as_string = pop_db.read()
 
         try:

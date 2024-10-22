@@ -13,7 +13,7 @@ CREATE TABLE projet.zone_geo (
     nom text,
     niveau text,
     code_insee text,
-    niveau_supperieur text
+    niveau_superieur text
 );
 
 
@@ -47,8 +47,9 @@ DROP TABLE IF EXISTS projet.point CASCADE ;
 
 CREATE TABLE projet.point (
     id_point serial PRIMARY KEY,
-    x int,
-    y int
+    x float,
+    y float,
+    unique(x, y)
 );
 
 
