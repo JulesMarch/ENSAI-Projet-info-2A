@@ -2,7 +2,7 @@ from utils.singleton import Singleton
 from dao.db_connection import DBConnection
 
 
-class IrisDao(metaclass=Singleton):
+class IrisDao(ZonageDao):
     def find_by_code(self, niveau: str, code: int):
         request = (
             f"SELECT code_insee, nom, zone_superieur"
