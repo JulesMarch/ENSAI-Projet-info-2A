@@ -23,11 +23,9 @@ class DepartementDao(metaclass=Singleton):
                     "END $$;                                            "
 
                     "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
-                    "code_insee, niveau_superieur)"
-                    "SELECT"
+                    " code_insee, niveau_superieur) VALUES              "
                     " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s, "
-                    " %(code_insee)s,"
-                    "(SELECT nom FROM projet.zone_geo WHERE code_insee = %(niveau_superieur)s)",
+                    " %(code_insee)s, %(niveau_superieur)s)             ",
                     {
                         "nom": zone["NOM"],
                         "niveau": "Département",
@@ -35,3 +33,4 @@ class DepartementDao(metaclass=Singleton):
                         "niveau_superieur": zone["INSEE_REG"]
                     },
                 )
+

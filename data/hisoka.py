@@ -12,44 +12,46 @@ from src.dao.db_connection import DBConnection
 with DBConnection().connection as connection:
     with connection.cursor() as cursor:
         cursor.execute(
+            "drop sequence if exists seq_id_zone_geo    "
+            
             "drop sequence if exists seq_id_polygone;   "
 
             "drop sequence if exists seq_id_point;      "
         )
 
-# with fiona.open(
-#     "//filer-eleves2/id2505/Cours2A/"
-#     "ADMIN-EXPRESS_3-2__SHP_WGS84G_FRA_2024-09-18/"
-#     "ADMIN-EXPRESS_3-2__SHP_WGS84G_FRA_2024-09-18/"
-#     "ADMIN-EXPRESS/1_DONNEES_LIVRAISON_2024-09-00117/"
-#     "ADE_3-2_SHP_WGS84G_FRA-ED2024-09-18/REGION.shp",
-#     'r'
-# ) as shapefile:
+with fiona.open(
+    "//filer-eleves2/id2505/Cours2A/"
+    "ADMIN-EXPRESS_3-2__SHP_WGS84G_FRA_2024-09-18/"
+    "ADMIN-EXPRESS_3-2__SHP_WGS84G_FRA_2024-09-18/"
+    "ADMIN-EXPRESS/1_DONNEES_LIVRAISON_2024-09-00117/"
+    "ADE_3-2_SHP_WGS84G_FRA-ED2024-09-18/REGION.shp",
+    'r'
+) as shapefile:
 
-#     for region in shapefile:
-#         for polygon in region["geometry"]["coordinates"]:
+    for region in shapefile:
+        for polygon in region["geometry"]["coordinates"]:
 
-#             PolygoneDao.add_polygone()
+            PolygoneDao.add_polygone()
 
-#             with connection.cursor() as cursor:
-#                 cursor.execute(
-#                     "drop sequence if exists ordre_point;"
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "drop sequence if exists ordre_point;"
 
-#                     "create sequence ordre_point;        "
-#                 )
+                    "create sequence ordre_point;        "
+                )
 
-#             for point in polygon:
+            for point in polygon:
 
-#                 PointDao.add_point(point)
+                PointDao.add_point(point)
 
-#                 with connection.cursor() as cursor:
-#                     cursor.execute(
-#                         "insert into projet.association_polygone_point  "
-#                         " (id_point, id_polygone, ordre) values         "
-#                         " (currval('seq_id_point'),                     "
-#                         "currval('seq_id_polygone'),                    "
-#                         "nextval('ordre_point'))                        "
-#                     )
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "insert into projet.association_polygone_point  "
+                        " (id_point, id_polygone, ordre) values         "
+                        " (currval('seq_id_point'),                     "
+                        "currval('seq_id_polygone'),                    "
+                        "nextval('ordre_point'))                        "
+                    )
 
 # with fiona.open(
 #     "//filer-eleves2/id2505/Cours2A/"
@@ -70,7 +72,6 @@ with DBConnection().connection as connection:
 
 =======
 #         RegionDao.add_zone_geo(properties)
->>>>>>> 7d24393bb356e64b5eb4a1415fe75d86591f77f7
 
 with fiona.open(
     "//filer-eleves2/id2505/Cours2A/"
@@ -109,4 +110,3 @@ with fiona.open(
 #         properties = element["properties"]
 #         print(properties)
 #         CommuneDao.add_zone_geo(properties)
->>>>>>> 7d24393bb356e64b5eb4a1415fe75d86591f77f7

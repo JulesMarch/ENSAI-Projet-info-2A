@@ -4,6 +4,22 @@ from src.dao.region_dao import RegionDao
 from src.dao.departement_dao import DepartementDao
 from src.dao.commune_dao import CommuneDao
 
+from src.dao.point_dao import PointDao
+from src.dao.polygone_dao import PolygoneDao
+
+from src.dao.db_connection import DBConnection
+
+
+with DBConnection().connection as connection:
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "drop sequence if exists seq_id_zone_geo;   "
+
+            "drop sequence if exists seq_id_polygone;   "
+
+            "drop sequence if exists seq_id_point;      "
+        )
+
 # Ajout des Régions
 
 with fiona.open(
@@ -17,10 +33,34 @@ with fiona.open(
 
     schema = shapefile.schema
     print(schema)
-    for element in shapefile:
-        properties = element["properties"]
+
+    for region in shapefile:
+        properties = region["properties"]
         print(properties)
         RegionDao.add_zone_geo(properties)
+
+        for polygon in region["geometry"]["coordinates"]:
+
+            PolygoneDao.add_polygone()
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "drop sequence if exists ordre_point;"
+
+                    "create sequence ordre_point;        "
+                )
+
+            for point in polygon:
+
+                PointDao.add_point(point)
+
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "insert into projet.association_polygone_point  "
+                        " (id_point, id_polygone, ordre) values         "
+                        " (currval('seq_id_point'),                     "
+                        "currval('seq_id_polygone'),                    "
+                        "nextval('ordre_point'))                        "
+                    )
 
 # Ajout des Départements
 
