@@ -6,7 +6,7 @@ CREATE SCHEMA projet;
 -- Zone
 --------------------------------------------------------------
 
-DROP TABLE IF EXISTS projet.zone_geo CASCADE ;
+DROP TABLE IF EXISTS projet.zone_geo CASCADE;
 
 CREATE TABLE projet.zone_geo (
     id_zone serial PRIMARY KEY,
@@ -32,7 +32,7 @@ CREATE TABLE projet.comp_connexe (
 -- Polygone
 --------------------------------------------------------------
 
-DROP TABLE IF EXISTS projet.polygone CASCADE ;
+DROP TABLE IF EXISTS projet.polygone CASCADE;
 
 CREATE TABLE projet.polygone (
     id_polygone serial PRIMARY KEY
@@ -43,7 +43,7 @@ CREATE TABLE projet.polygone (
 -- Point
 --------------------------------------------------------------
 
-DROP TABLE IF EXISTS projet.point CASCADE ;
+DROP TABLE IF EXISTS projet.point CASCADE;
 
 CREATE TABLE projet.point (
     id_point serial PRIMARY KEY,
@@ -57,7 +57,7 @@ CREATE TABLE projet.point (
 -- Association Zone et Composante connexe
 --------------------------------------------------------------
 
-DROP TABLE IF EXISTS projet.asso_zone_comp_co CASCADE ;
+DROP TABLE IF EXISTS projet.asso_zone_comp_co CASCADE;
 
 CREATE TABLE projet.asso_zone_comp_co (
     id_zone serial references projet.zone_geo,

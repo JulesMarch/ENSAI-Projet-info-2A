@@ -37,7 +37,7 @@ with fiona.open(
     for region in shapefile:
         properties = region["properties"]
         print(properties)
-        RegionDao.add_zone_geo(properties)
+        RegionDao.add_region(properties)
 
         for polygon in region["geometry"]["coordinates"]:
 
@@ -53,14 +53,30 @@ with fiona.open(
 
                 PointDao.add_point(point)
 
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "insert into projet.association_polygone_point  "
-                        " (id_point, id_polygone, ordre) values         "
-                        " (currval('seq_id_point'),                     "
-                        "currval('seq_id_polygone'),                    "
-                        "nextval('ordre_point'))                        "
-                    )
+                if PointDao.est_dans(point):
+
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            "insert into projet.association_polygone_point  "
+                            " (id_point, id_polygone, ordre) values         "
+                            " (%(id_point)s),                     "
+                            "currval('seq_id_polygone'),                    "
+                            "nextval('ordre_point'))                        ",
+                            {
+                                "id_point": PointDao.get_id_point(point)
+                            }
+                        )
+
+                else:
+
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            "insert into projet.association_polygone_point  "
+                            " (id_point, id_polygone, ordre) values         "
+                            " (currval('seq_id_point'),                     "
+                            "currval('seq_id_polygone'),                    "
+                            "nextval('ordre_point'))                        "
+                        )
 
 # Ajout des Départements
 
@@ -75,10 +91,10 @@ with fiona.open(
 
     schema = shapefile.schema
     print(schema)
-    for element in shapefile: 
+    for element in shapefile:
         properties = element["properties"]
         print(properties)
-        DepartementDao.add_zone_geo(properties)
+        DepartementDao.add_departement(properties)
 
 # Ajout des Communes
 
@@ -93,7 +109,7 @@ with fiona.open(
 
     schema = shapefile.schema
     print(schema)
-    for element in shapefile: 
+    for element in shapefile:
         properties = element["properties"]
         print(properties)
-        CommuneDao.add_zone_geo(properties)
+        CommuneDao.add_commune(properties)
