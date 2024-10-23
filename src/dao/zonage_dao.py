@@ -92,7 +92,10 @@ class ZonageDao(metaclass=Singleton):
             }
             resultat_final.append(infos)
 
-        return resultat_final
+        if len(resultat_final) == 0:
+            raise TypeError("ce nom n'est associé à aucune entité géographique")
+        else:
+            return resultat_final
 
     def find_by_code_insee(code_insee: str, niveau: str):
         """
@@ -125,8 +128,10 @@ class ZonageDao(metaclass=Singleton):
             }
             resultat_final.append(infos)
 
-        return resultat_final
-
+        if len(resultat_final) == 0:
+            raise TypeError("ce code n'est associé à aucune entité géographique")
+        else:
+            return resultat_final
 # test = ZonageDao.find_by_nom("Gironde", "Département")
 # print(test)
 
