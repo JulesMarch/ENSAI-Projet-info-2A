@@ -1,7 +1,7 @@
 ## Importation des packages
 
 import tkinter as tk
-from tkinter import font, messagebox
+from tkinter import font, messagebox, ttk
 from PIL import Image, ImageTk
 import os
 
@@ -119,7 +119,7 @@ class MainWindow:
         self.root.geometry("1000x600")
 
         # Charger l'image de fond
-        self.background_image = Image.open("Interface/Zoom_Paris.jpg")
+        self.background_image = Image.open("T_interface/Zoom_Paris.jpg")
         self.background_image = self.background_image.resize((1000, 600))
         self.bg_image = ImageTk.PhotoImage(self.background_image)
 
@@ -163,7 +163,7 @@ class SecondWindow:
         self.window.geometry("600x600")
 
         # Charger l'image de fond
-        self.background_image = Image.open("Interface/Fonction 1.jpg")
+        self.background_image = Image.open("T_interface/Fonction 1.jpg")
         self.background_image = self.background_image.resize((600, 600))
         self.bg_image = ImageTk.PhotoImage(self.background_image)
 
@@ -184,17 +184,23 @@ class SecondWindow:
         instruction = tk.Label(self.window, text=texte, font=bold_font_sub, wraplength=300, relief="solid", bd="2", justify="center", bg="orange")
         instruction.place(x=175, y=200)
         
-        # Zone de texte
-        self.text_entry = tk.Entry(self.window, width=30)
-        self.text_entry.place(x=200, y=300, width=200, height=30)
+        # Zone de texte 1
+        self.text_entry_1 = tk.Entry(self.window, width=30)
+        self.text_entry_1.place(x=200, y=300, width=200, height=30)
+
+        # Menu déroulant
+        self.options = ["Région", "Département", "Commune", "Arrondissement", "IRIS"]
+        self.combo_box = ttk.Combobox(self.window, values=self.options, state="readonly")
+        self.combo_box.place(x=200, y=350, width=200, height=30)
+        self.combo_box.current(0)  # Sélectionner la première option par défaut
 
         # Bouton de validation pour récupérer le texte
         button_valider = tk.Button(self.window, text="Valider", font=bold_font_sub, command=self.valider_texte)
-        button_valider.place(x=240, y=350, width=100, height=30)
+        button_valider.place(x=260, y=400, width=100, height=30)
 
         # Label pour afficher le résultat de la validation
         self.label_resultat = tk.Label(self.window, text="", font=bold_font_sub, bg="white")
-        self.label_resultat.place(x=185, y=400)
+        self.label_resultat.place(x=185, y=450)
 
         button_back_main = tk.Button(self.window, text="Retour au menu principal", font=bold_font_sub, command=self.return_to_main_window)
         button_back_main.place(x=200, y=500, width=200, height=50)
@@ -202,9 +208,10 @@ class SecondWindow:
         self.window.protocol("WM_DELETE_WINDOW", self.return_to_main_window)
 
     def valider_texte(self):
-        # Récupérer le texte de la zone de texte et l'afficher dans le label
-        texte = self.text_entry.get()
-        self.label_resultat.config(text=f"Point rentré : {texte}")
+        # Récupérer les textes des deux zones de texte et les afficher dans le label
+        texte_1 = self.text_entry_1.get()
+        option_selectionnee = self.combo_box.get()
+        self.label_resultat.config(text=f"Texte : {texte_1}\nOption sélectionnée : {option_selectionnee}")
 
     def return_to_main_window(self):
         self.window.destroy()
@@ -219,7 +226,7 @@ class ThirdWindow:
         self.window.geometry("600x600")
 
         # Charger l'image de fond
-        self.background_image = Image.open("Interface/Fonction 2.jpg")
+        self.background_image = Image.open("T_interface/Fonction 2.jpg")
         self.background_image = self.background_image.resize((600, 600))
         self.bg_image = ImageTk.PhotoImage(self.background_image)
 
