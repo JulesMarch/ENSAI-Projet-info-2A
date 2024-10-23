@@ -132,6 +132,7 @@ class ZonageDao(metaclass=Singleton):
             raise TypeError("ce code n'est associé à aucune entité géographique")
         else:
             return resultat_final
+
 # test = ZonageDao.find_by_nom("Gironde", "Département")
 # print(test)
 
