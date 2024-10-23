@@ -119,7 +119,7 @@ class MainWindow:
         self.root.geometry("1000x600")
 
         # Charger l'image de fond
-        self.background_image = Image.open("T_interface/Zoom_Paris.jpg")
+        self.background_image = Image.open("Interface/Zoom_Paris.jpg")
         self.background_image = self.background_image.resize((1000, 600))
         self.bg_image = ImageTk.PhotoImage(self.background_image)
 
@@ -163,7 +163,7 @@ class SecondWindow:
         self.window.geometry("600x600")
 
         # Charger l'image de fond
-        self.background_image = Image.open("T_interface/Fonction 1.jpg")
+        self.background_image = Image.open("Interface/Fonction 1.jpg")
         self.background_image = self.background_image.resize((600, 600))
         self.bg_image = ImageTk.PhotoImage(self.background_image)
 
@@ -226,7 +226,7 @@ class ThirdWindow:
         self.window.geometry("600x600")
 
         # Charger l'image de fond
-        self.background_image = Image.open("T_interface/Fonction 2.jpg")
+        self.background_image = Image.open("Interface/Fonction 2.jpg")
         self.background_image = self.background_image.resize((600, 600))
         self.bg_image = ImageTk.PhotoImage(self.background_image)
 
