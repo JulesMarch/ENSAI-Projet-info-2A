@@ -58,6 +58,7 @@ def find_departement(x: float, y: float):
             print("Ce point se trouve en ", + curr_dep.nom)
             return curr_dep.num_rgn
 
+# cas pour commune
 
 def find_commune(x: float, y: float):
     dep = find_departement(x, y)

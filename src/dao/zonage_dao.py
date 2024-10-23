@@ -1,6 +1,9 @@
 from src.utils.singleton import Singleton
 from src.dao.db_connection import DBConnection
 
+from src.dao.region_dao import RegionDao
+from src.dao.departement_dao import DepartementDao
+from src.dao.commune_dao import CommuneDao
 
 niveaux = ["Région", "Département", "Commune", "Arrondissement", "IRIS"]
 
@@ -92,10 +95,7 @@ class ZonageDao(metaclass=Singleton):
             }
             resultat_final.append(infos)
 
-        if len(resultat_final) == 0:
-            raise TypeError("ce nom n'est associé à aucune entité géographique")
-        else:
-            return resultat_final
+        return resultat_final
 
     def find_by_code_insee(code_insee: str, niveau: str):
         """
@@ -106,35 +106,62 @@ class ZonageDao(metaclass=Singleton):
                              '"departement", "commune", "arrondissement",' +
                              '"IRIS"')
 
-        with DBConnection().connection as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "select * from projet.zone_geo                          "
-                    " where code_insee=%(code_insee)s and niveau=%(niveau)s ",
-                    {
-                        "code_insee": code_insee,
-                        "niveau": niveau
-                    },
-                )
-                res = cursor.fetchall()
+        if niveau == "Région":
+            return RegionDao.find_by_code_insee(code_insee)
 
-        resultat_final = []
-        for row in res:
-            infos = {
-                "nom": row["nom"],
-                "niveau": row["niveau"],
-                "code_insee": row["code_insee"],
-                "niveau_superieur": row["niveau_superieur"]
-            }
-            resultat_final.append(infos)
+        elif niveau == "Département":
+            return DepartementDao.find_by_code_insee(code_insee)
 
+<<<<<<< HEAD
         if len(resultat_final) == 0:
             raise TypeError("ce code n'est associé à aucune entité géographique")
         else:
             return resultat_final
 
 # test = ZonageDao.find_by_nom("Gironde", "Département")
+=======
+        elif niveau == "Commune":
+            return CommuneDao.find_by_code_insee(code_insee)
+
+
+        # with DBConnection().connection as connection:
+        #     with connection.cursor() as cursor:
+        #         cursor.execute(
+        #             "select * from projet.zone_geo                          "
+        #             " where code_insee=%(code_insee)s and niveau=%(niveau)s ",
+        #             {
+        #                 "code_insee": code_insee,
+        #                 "niveau": niveau
+        #             },
+        #         )
+        #         res = cursor.fetchall()
+
+        # resultat_final = []
+        # for row in res:
+        #     infos = {
+        #         "nom": row["nom"],
+        #         "niveau": row["niveau"],
+        #         "code_insee": row["code_insee"],
+        #         "niveau_superieur": row["niveau_superieur"]
+        #     }
+        #     resultat_final.append(infos)
+
+        # if len(resultat_final) == 0:
+        #     raise ValueError(
+        #         f"Le code donné n'est associé à aucun(e) {niveau}."
+        #     )
+
+        # return resultat_final
+
+# test = ZonageDao.find_by_code_insee("35", "Département")
+>>>>>>> 6cd60c9d5684c6a1fd4bafe7d48c25969d16d238
 # print(test)
 
-test2 = ZonageDao.find_by_code_insee("34138", "Commune")
-print(test2)
+# test2 = ZonageDao.find_by_code_insee("34138", "Commune")
+# print(test2)
+
+# test3 = ZonageDao.find_by_code_insee("11", "Région")
+# print(test3)
+
+test4 = ZonageDao.find_by_code_insee("35006", "Commune")
+print(test4)

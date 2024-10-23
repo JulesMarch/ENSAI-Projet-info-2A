@@ -26,10 +26,10 @@ class PointDao(metaclass=Singleton):
                         "END $$;                                            "
 
                         "INSERT INTO projet.point (id_point, x, y) VALUES   "
-                        " (nextval('seq_id_point'), %(x)s, %(y)s) on conflict (x, y) do nothing",
+                        " (nextval('seq_id_point'), %(x)s, %(y)s);          ",
                         {
                             "x": point[0],
-                            "y": point[1],
+                            "y": point[1]
                         },
                     )
 
@@ -44,13 +44,13 @@ class PointDao(metaclass=Singleton):
                     "select x, y from projet.point                          "
                     "   where x=%(x)s and y=%(y)s                           ",
                     {
-                        "x": point[0],
-                        "y": point[1],
+                        "x": round(point[0], 4),
+                        "y": round(point[1], 4)
                     },
                 )
                 res = cursor.fetchone()
 
-        if res:
+        if res is not None:
 
             return True
 
@@ -78,3 +78,25 @@ class PointDao(metaclass=Singleton):
             )
 
         return point
+
+    def get_id_point(point: tuple) -> int:
+
+        id = None
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select id from projet.point                          "
+                    "   where x=%(x)s, y=%(y)s                            ",
+                    {
+                        "x": point[0],
+                        "y": point[1]
+                    },
+                )
+                res = cursor.fetchone()
+
+        if res:
+
+            id = res["id"]
+
+        return id

@@ -12,8 +12,8 @@ from src.dao.db_connection import DBConnection
 with DBConnection().connection as connection:
     with connection.cursor() as cursor:
         cursor.execute(
-            "drop sequence if exists seq_id_zone_geo    "
-            
+            "drop sequence if exists seq_id_zone_geo;   "
+
             "drop sequence if exists seq_id_polygone;   "
 
             "drop sequence if exists seq_id_point;      "
@@ -41,6 +41,14 @@ with fiona.open(
                 )
 
             for point in polygon:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "select * from projet.point  "
+                        " (id_point, id_polygone, ordre) values         "
+                        " (currval('seq_id_point'),                     "
+                        "currval('seq_id_polygone'),                    "
+                        "nextval('ordre_point'))                        "
+                    )
 
                 PointDao.add_point(point)
 
@@ -67,10 +75,10 @@ with fiona.open(
 #     for element in shapefile:
 #         properties = element["properties"]
 #         print(properties)
-<<<<<<< HEAD
+
 #         ZonageDao.add_zone_geo(properties)
 
-=======
+
 #         RegionDao.add_zone_geo(properties)
 
 with fiona.open(
@@ -100,12 +108,12 @@ with fiona.open(
 
 #     schema = shapefile.schema
 #     print(schema)
-<<<<<<< HEAD
+
 #     for element in shapefile:
 #         properties = element["properties"]
 #         print(properties)
 #         CommuneDao.add_zone_geo(properties)
-=======
+
 #     for element in shapefile: 
 #         properties = element["properties"]
 #         print(properties)
