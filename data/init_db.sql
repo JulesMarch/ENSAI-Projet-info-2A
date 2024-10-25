@@ -60,8 +60,8 @@ CREATE TABLE projet.point (
 DROP TABLE IF EXISTS projet.asso_zone_comp_co CASCADE;
 
 CREATE TABLE projet.asso_zone_comp_co (
-    id_zone serial references projet.zone_geo,
-    id_comp_connexe serial references projet.comp_connexe
+    id_zone integer references projet.zone_geo,
+    id_comp_connexe integer references projet.comp_connexe
 );
 
 
@@ -72,9 +72,9 @@ CREATE TABLE projet.asso_zone_comp_co (
 DROP TABLE IF EXISTS projet.association_connexe_polygone CASCADE;
 
 CREATE TABLE projet.association_connexe_polygone (
-	id_polygone serial references projet.polygone,
-    id_comp_connexe serial references projet.comp_connexe,
-    ordre serial,
+	id_polygone integer references projet.polygone,
+    id_comp_connexe integer references projet.comp_connexe,
+    ordre integer,
     creux boolean
 );
 
@@ -86,8 +86,8 @@ CREATE TABLE projet.association_connexe_polygone (
 DROP TABLE IF EXISTS projet.association_polygone_point;
 
 CREATE table projet.association_polygone_point (
-    id_point serial references projet.point,
-    id_polygone serial references projet.polygone,
-    ordre serial
+    id_point integer references projet.point,
+    id_polygone integer references projet.polygone,
+    ordre integer
 );
 

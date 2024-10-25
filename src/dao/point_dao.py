@@ -17,21 +17,14 @@ class PointDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "DO $$                                              "
-                        "BEGIN                                              "
-                        "   IF NOT EXISTS (SELECT 1 FROM pg_class           "
-                        "WHERE relname = 'seq_id_point') THEN"
-                        "   EXECUTE 'CREATE SEQUENCE seq_id_point';         "
-                        "   END IF;                                         "
-                        "END $$;                                            "
-
-                        "INSERT INTO projet.point (id_point, x, y) VALUES   "
-                        " (nextval('seq_id_point'), %(x)s, %(y)s);          ",
+                        "INSERT INTO projet.point (x, y) VALUES   "
+                        " (%(x)s, %(y)s);          ",
                         {
                             "x": point[0],
                             "y": point[1]
                         },
                     )
+                connection.commit()
 
     def est_dans(point: tuple) -> bool:
         """
@@ -44,8 +37,8 @@ class PointDao(metaclass=Singleton):
                     "select x, y from projet.point                          "
                     "   where x=%(x)s and y=%(y)s                           ",
                     {
-                        "x": round(point[0], 4),
-                        "y": round(point[1], 4)
+                        "x": round(point[0]),
+                        "y": round(point[1])
                     },
                 )
                 res = cursor.fetchone()
