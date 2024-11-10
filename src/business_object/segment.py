@@ -10,12 +10,13 @@ class Segment:
 
         # Si la droite est verticale, il n'y a pas de coefficient directeur
         if self.p1.x == self.p2.x:
-            return None
+            return 10000000000
 
         return (self.p2.y - self.p1.y)/(self.p2.x - self.p1.x)
 
+
     def get_ordonnee_origine(self) -> float:
-        a = self.get_coef_direct()
+        a = self.get_coef_directeur()
         return self.p1.y - a*self.p1.x
 
     def detec_inters(self, seg) -> bool:
@@ -47,6 +48,7 @@ class Segment:
         # On teste si le point d'intersection est dans l'intervalle
         if x_min <= x and x <= x_max:
             if y_min <= y and y <= y_max:
+                # print([[x,y],([seg.p1.x, seg.p1.y], [seg.p2.x, seg.p2.y]), ([self.p1.x, self.p1.y], [self.p2.x, self.p2.y])])
                 return True
 
         return False

@@ -7,8 +7,8 @@ class Zonage(ABC):
     def __init__(
         self,
         nom: str,
-        perimetre: list(Segment),
-        creux: list(Segment),
+        perimetre: list[Segment],
+        creux,
         edition_carte: int
     ):
 
@@ -19,17 +19,20 @@ class Zonage(ABC):
 
     def appartient_zonage(self, p):
         # Construction de la demi-droite
-        p2 = Point(x=p.x, y=10000)
+        p2 = Point(x= 180, y=p.y)
         DD = Segment(p, p2)
         # Détection du nb d'intersections
         nb_inters = 0
         nb_inters += self.perimetre.comptage_inters(DD)
+        print(nb_inters)
         # Est-ce que le point appartient au zonage ?
-        if nb_inters//2 == 1:
-            for i in self.creux:
-                nb_inters_creux = i.comptage_inters(DD)
-                if nb_inters_creux//2 == 1:
-                    return False
+        if nb_inters%2 == 1:
+            # for i in self.creux:
+            #     nb_inters_creux = i.comptage_inters(DD)
+            #     if nb_inters_creux//2 == 1:
+            #         return False
+            print("c'est bon !")
             return True
         else:
+            print("échec...")
             return False
