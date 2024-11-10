@@ -19,14 +19,12 @@ async def root():
     return {"message": "Bienvenue sur notre API"}
 
 
-@app.get("/zonage/{type_zonage}/2024/{code_insee}")
-async def get_zone(type_zonage, code_insee):
-    print(type_zonage, code_insee)
-    answer = ZonageDao.find_by_code_insee(str(code_insee), type_zonage)
+@app.get("/zonage/{niveau}/2024/{code_insee}")
+async def get_zone(niveau, code_insee):
+    print(niveau, code_insee)
+    answer = ZonageDao.find_by_code_insee(str(code_insee), niveau)
     return answer
 
 # Lancement de l'application sur le le port 80
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost")
-
-# http://localhost:8000/zonage/Département/2024/35
