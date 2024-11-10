@@ -112,17 +112,8 @@ class ZonageDao(metaclass=Singleton):
         elif niveau == "Département":
             return DepartementDao.find_by_code_insee(code_insee)
 
-<<<<<<< HEAD
-        if len(resultat_final) == 0:
-            raise TypeError("ce code n'est associé à aucune entité géographique")
-        else:
-            return resultat_final
-
-# test = ZonageDao.find_by_nom("Gironde", "Département")
-=======
         elif niveau == "Commune":
             return CommuneDao.find_by_code_insee(code_insee)
-
 
         # with DBConnection().connection as connection:
         #     with connection.cursor() as cursor:
@@ -153,15 +144,15 @@ class ZonageDao(metaclass=Singleton):
 
         # return resultat_final
 
-# test = ZonageDao.find_by_code_insee("35", "Département")
->>>>>>> 6cd60c9d5684c6a1fd4bafe7d48c25969d16d238
-# print(test)
+
+test = ZonageDao.find_by_code_insee("35", "Département")
+print(test)
 
 # test2 = ZonageDao.find_by_code_insee("34138", "Commune")
 # print(test2)
 
-# test3 = ZonageDao.find_by_code_insee("11", "Région")
-# print(test3)
+test3 = ZonageDao.find_by_code_insee("11", "Région")
+print(test3)
 
-test4 = ZonageDao.find_by_code_insee("35006", "Commune")
-print(test4)
+# test4 = ZonageDao.find_by_code_insee("35006", "Commune")
+# print(test4)
