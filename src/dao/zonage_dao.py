@@ -115,7 +115,6 @@ class ZonageDao(metaclass=Singleton):
         elif niveau == "Commune":
             return CommuneDao.find_by_code_insee(code_insee)
 
-
         # with DBConnection().connection as connection:
         #     with connection.cursor() as cursor:
         #         cursor.execute(
@@ -145,14 +144,15 @@ class ZonageDao(metaclass=Singleton):
 
         # return resultat_final
 
-# test = ZonageDao.find_by_code_insee("35", "Département")
-# print(test)
+
+test = ZonageDao.find_by_code_insee("35", "Département")
+print(test)
 
 # test2 = ZonageDao.find_by_code_insee("34138", "Commune")
 # print(test2)
 
-# test3 = ZonageDao.find_by_code_insee("11", "Région")
-# print(test3)
+test3 = ZonageDao.find_by_code_insee("11", "Région")
+print(test3)
 
-test4 = ZonageDao.find_by_code_insee("35006", "Commune")
-print(test4)
+# test4 = ZonageDao.find_by_code_insee("35006", "Commune")
+# print(test4)

@@ -24,7 +24,8 @@ CREATE TABLE projet.zone_geo (
 DROP TABLE IF EXISTS projet.comp_connexe CASCADE;
 
 CREATE TABLE projet.comp_connexe (
-    id_comp_connexe serial PRIMARY KEY
+    id_comp_connexe serial PRIMARY KEY,
+    type_composante text 
 );
 
 
@@ -35,7 +36,8 @@ CREATE TABLE projet.comp_connexe (
 DROP TABLE IF EXISTS projet.polygone CASCADE;
 
 CREATE TABLE projet.polygone (
-    id_polygone serial PRIMARY KEY
+    id_polygone serial PRIMARY KEY,
+    region_geo text
 );
 
 
@@ -47,9 +49,9 @@ DROP TABLE IF EXISTS projet.point CASCADE;
 
 CREATE TABLE projet.point (
     id_point serial PRIMARY KEY,
-    x real,
-    y real,
-    unique(x, y)
+    x float,
+    y float,
+    unique(x,y)
 );
 
 
@@ -86,8 +88,8 @@ CREATE TABLE projet.association_connexe_polygone (
 DROP TABLE IF EXISTS projet.association_polygone_point;
 
 CREATE table projet.association_polygone_point (
-    id_point integer references projet.point,
-    id_polygone integer references projet.polygone,
+    id_point integer references projet.point(id_point),
+    id_polygone integer references projet.polygone(id_polygone),
     ordre integer
 );
 

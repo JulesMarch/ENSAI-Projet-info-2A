@@ -11,7 +11,7 @@ class PointDao(metaclass=Singleton):
         Add a point to the database
             (works only if the point is not already in the database)
         """
-
+        print("Ajout point :)")
         if not PointDao.est_dans(point):
 
             with DBConnection().connection as connection:
@@ -25,6 +25,7 @@ class PointDao(metaclass=Singleton):
                         },
                     )
                 connection.commit()
+        print("Réussite")
 
     def est_dans(point: tuple) -> bool:
         """
@@ -37,8 +38,8 @@ class PointDao(metaclass=Singleton):
                     "select x, y from projet.point                          "
                     "   where x=%(x)s and y=%(y)s                           ",
                     {
-                        "x": round(point[0]),
-                        "y": round(point[1])
+                        "x": point[0],
+                        "y": point[1]
                     },
                 )
                 res = cursor.fetchone()
@@ -79,8 +80,8 @@ class PointDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "select id from projet.point                          "
-                    "   where x=%(x)s, y=%(y)s                            ",
+                    "select id_point from projet.point                    "
+                    "   where x=%(x)s and y=%(y)s                         ",
                     {
                         "x": point[0],
                         "y": point[1]
@@ -90,6 +91,6 @@ class PointDao(metaclass=Singleton):
 
         if res:
 
-            id = res["id"]
+            id = res["id_point"]
 
         return id
