@@ -23,9 +23,9 @@ class RegionDao:
                     "   END IF;                                         "
                     "END $$;                                            "
 
-                    "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
+                    "INSERT INTO projet.zone_geo (nom, niveau, "
                     " code_insee, niveau_superieur) VALUES              "
-                    " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s, "
+                    " (%(nom)s, %(niveau)s, "
                     " %(code_insee)s, %(niveau_superieur)s)             ",
                     {
                         "nom": zone["NOM"],

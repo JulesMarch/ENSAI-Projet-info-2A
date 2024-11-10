@@ -145,8 +145,8 @@ class ZonageDao(metaclass=Singleton):
         # return resultat_final
 
 
-test = ZonageDao.find_by_code_insee("35", "Département")
-print(test)
+# test = ZonageDao.find_by_code_insee("35", "Département")
+# print(test)
 
 # test2 = ZonageDao.find_by_code_insee("34138", "Commune")
 # print(test2)
@@ -155,4 +155,3 @@ test3 = ZonageDao.find_by_code_insee("11", "Région")
 print(test3)
 
 # test4 = ZonageDao.find_by_code_insee("35006", "Commune")
-# print(test4)
