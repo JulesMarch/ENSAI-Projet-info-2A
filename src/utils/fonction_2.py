@@ -38,13 +38,13 @@ def find_region(x: float, y: float):
         lst_pts_perim = []
         for pt in pts_perim:
             lst_pts_perim.append(Point(pt["x"], pt["y"]))
-        print(len(lst_pts_perim))
+        # print(len(lst_pts_perim))
 
         lst_seg = []
         for i in range(0, len(lst_pts_perim)-1):
             lst_seg.append(Segment(lst_pts_perim[i], lst_pts_perim[i+1]))
         lst_seg.append(Segment(lst_pts_perim[len(lst_pts_perim) -1], lst_pts_perim[0]))
-        print(len(lst_seg))
+        # print(len(lst_seg))
 
         curr_reg = Region(
             nom=reg["nom"],
@@ -117,5 +117,14 @@ def find_region(x: float, y: float):
 #             return curr_com.num_rgn
 
 
-test = find_region(-1.7420038, 48.0511495)
-# print(test)
+testTE = find_region(2.2945006, 48.8582599).nom
+print("Tour eiffel :", testTE)
+
+testDunk = find_region(2.3772525, 51.0347708).nom
+print("Dunkerque :", testDunk)
+
+testStrasb = find_region(7.750589152096361, 48.581766559651534).nom
+print("Strasbourg : ", testStrasb)
+
+testrand = find_region(-0.9848975978939434, 48.998783121883186).nom
+print("Ville dans la Manche au pif :", testrand)
