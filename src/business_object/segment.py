@@ -10,8 +10,7 @@ class Segment:
 
         # Si la droite est verticale, il n'y a pas de coefficient directeur
         if self.p1.x == self.p2.x:
-            return 10000000000
-
+            return 1000000000
         return (self.p2.y - self.p1.y)/(self.p2.x - self.p1.x)
 
 
@@ -40,15 +39,14 @@ class Segment:
             y = a1*x+b1
 
         # Bornes des intervalles d'acceptation
-        x_min = min(self.p1.x, self.p2.x)
-        x_max = max(self.p1.x, self.p2.x)
-        y_min = min(self.p1.y, self.p2.y)
-        y_max = max(self.p1.y, self.p2.y)
+        x_min_self, x_max_self = min(self.p1.x, self.p2.x), max(self.p1.x, self.p2.x)
+        y_min_self, y_max_self = min(self.p1.y, self.p2.y), max(self.p1.y, self.p2.y)
+        x_min_seg, x_max_seg = min(seg.p1.x, seg.p2.x), max(seg.p1.x, seg.p2.x)
+        y_min_seg, y_max_seg = min(seg.p1.y, seg.p2.y), max(seg.p1.y, seg.p2.y)
 
-        # On teste si le point d'intersection est dans l'intervalle
-        if x_min <= x and x <= x_max:
-            if y_min <= y and y <= y_max:
-                # print([[x,y],([seg.p1.x, seg.p1.y], [seg.p2.x, seg.p2.y]), ([self.p1.x, self.p1.y], [self.p2.x, self.p2.y])])
-                return True
+        if (x_min_self <= x <= x_max_self and y_min_self <= y <= y_max_self and
+            x_min_seg <= x <= x_max_seg and y_min_seg <= y <= y_max_seg):
+            print([[x, y], ([seg.p1.x, seg.p1.y], [seg.p2.x, seg.p2.y]), ([self.p1.x, self.p1.y], [self.p2.x, self.p2.y])])
+            return True
 
         return False
