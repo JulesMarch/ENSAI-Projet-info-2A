@@ -9,12 +9,21 @@ from src.dao.composante_connexe_dao import ComposanteConnexeDao
 
 # Ajout des Régions
 
+# with fiona.open(
+#     "//filer-eleves2/id2505/Cours2A/"
+#     "ADMIN-EXPRESS_3-2__SHP_WGS84G_FRA_2024-09-18/"
+#     "ADMIN-EXPRESS_3-2__SHP_WGS84G_FRA_2024-09-18/"
+#     "ADMIN-EXPRESS/1_DONNEES_LIVRAISON_2024-09-00117/"
+#     "ADE_3-2_SHP_WGS84G_FRA-ED2024-09-18/REGION.shp",
+#     'r'
+# ) as shapefile:
+
 with fiona.open(
-    "//filer-eleves2/id2505/Cours2A/"
-    "ADMIN-EXPRESS_3-2__SHP_WGS84G_FRA_2024-09-18/"
-    "ADMIN-EXPRESS_3-2__SHP_WGS84G_FRA_2024-09-18/"
-    "ADMIN-EXPRESS/1_DONNEES_LIVRAISON_2024-09-00117/"
-    "ADE_3-2_SHP_WGS84G_FRA-ED2024-09-18/REGION.shp",
+    "C:/Nouveau dossier/"
+    "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03/"
+    "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03/"
+    "ADMIN-EXPRESS-COG/1_DONNEES_LIVRAISON_2023-05-03/"
+    "ADECOG_3-2_SHP_WGS84G_FRA/REGION.shp",
     'r'
 ) as shapefile:
 

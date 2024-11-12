@@ -31,8 +31,9 @@ class PolygoneDao(metaclass=Singleton):
                     cursor.execute(
                         "insert into projet.association_polygone_point      "
                         " (id_point, id_polygone, ordre) values             "
-                        "(%(id_point)s, "
-                        "(select max(id_polygone) from projet.polygone), %(ordre)s) ",
+                        " (%(id_point)s,                                    "
+                        " (select max(id_polygone) from projet.polygone),   "
+                        " %(ordre)s)                                        ",
                         {
                             'id_point': id_point,
                             'ordre': i
