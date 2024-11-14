@@ -16,15 +16,7 @@ class DepartementDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DO $$                                              "
-                    "BEGIN                                              "
-                    "   IF NOT EXISTS (SELECT 1 FROM pg_class           "
-                    "WHERE relname = 'seq_id_zone_geo') THEN"
-                    "   EXECUTE 'CREATE SEQUENCE seq_id_zone_geo';      "
-                    "   END IF;                                         "
-                    "END $$;                                            "
-
-                    "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
+                    "insert into projet.zone_geo (id_zone, nom, niveau, "
                     " code_insee, niveau_superieur) VALUES              "
                     " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s, "
                     " %(code_insee)s, %(niveau_superieur)s)             ",
@@ -68,3 +60,29 @@ class DepartementDao(metaclass=Singleton):
         raise ValueError(
                 "Le code donné n'est associé à aucune Région."
             )
+
+    def find_by_nom(nom: str):
+
+        resultat_final = None
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select * from projet.zone_geo                          "
+                    " where code_insee=%(code_insee)s                       ",
+                    {
+                        "code_insee": code_insee
+                    },
+                )
+                res = cursor.fetchone()
+
+        if res:
+
+            resultat_final = {
+                "nom": res["nom"],
+                "niveau": res["niveau"],
+                "code_insee": res["code_insee"],
+                "Région": RegionDao.find_by_code_insee(res["niveau_superieur"])["nom"]
+            }
+
+            return resultat_final

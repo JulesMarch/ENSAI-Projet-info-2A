@@ -19,7 +19,7 @@ from src.dao.composante_connexe_dao import ComposanteConnexeDao
 # ) as shapefile:
 
 with fiona.open(
-    "C:/Nouveau dossier/"
+    "//filer-eleves2/id2505/Cours2A/"
     "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03/"
     "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03/"
     "ADMIN-EXPRESS-COG/1_DONNEES_LIVRAISON_2023-05-03/"
@@ -34,6 +34,7 @@ with fiona.open(
 
         # Dictionnaire contenant les informations de la région
         properties = region["properties"]
+        print(properties)
 
         # Dictionnaire contenant les délimitations de la région
         geometry = region['geometry']

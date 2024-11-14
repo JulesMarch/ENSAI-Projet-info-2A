@@ -1,13 +1,13 @@
-# from utils.singleton import Singleton
+from utils.singleton import Singleton
 from src.dao.db_connection import DBConnection
 # from src.business_object.region import Region
 
 
-class RegionDao:
+class RegionDao(metaclass=Singleton):
     def add_region(zone: dict):
         """
-        Add a geographical zone to the database
-            (works only if the zone is not already in the database)
+        Add a Region to the database
+            (works only if the region is not already in the database)
         """
 
         # if not ZonageDao.est_dans(zone):
@@ -23,9 +23,9 @@ class RegionDao:
                     "   END IF;                                         "
                     "END $$;                                            "
 
-                    "INSERT INTO projet.zone_geo (nom, niveau, "
+                    "INSERT INTO projet.zone_geo (nom, niveau,          "
                     " code_insee, niveau_superieur) VALUES              "
-                    " (%(nom)s, %(niveau)s, "
+                    " (%(nom)s, %(niveau)s,                             "
                     " %(code_insee)s, %(niveau_superieur)s)             ",
                     {
                         "nom": zone["NOM"],

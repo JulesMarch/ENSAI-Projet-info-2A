@@ -91,3 +91,13 @@ class ComposanteConnexeDao(metaclass=Singleton):
                                 'creux': True
                             }
                         )
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "insert into projet.asso_zone_comp_co           "
+                    " (id_zone, id_comp_connexe) values             "
+                    "((select max(id_zone) from projet.zone_geo),   "
+                    "(select max(id_comp_connexe) from              "
+                    "projet.comp_connexe))                          "
+                )
