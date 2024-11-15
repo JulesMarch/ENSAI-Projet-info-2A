@@ -4,6 +4,18 @@ from dao.db_connection import DBConnection
 
 class ArrondissementDao(metaclass=Singleton):
     def find_by_code(self, niveau: str, code: int):
+        """
+        Recherche des informations sur un arrondissement à partir de son code INSEE
+        
+        Args:
+            niveau (str): Niveau géographique (ex : "commune")
+            code (int): Code INSEE de la zone à rechercher
+
+        Returns:
+            str: Informations sur l'arrondissement, incluant le code INSEE, 
+                 le nom de la commune et la zone supérieure.
+        """
+
         request = (
             f"SELECT code_insee, nom, zone_superieur"
             f"FROM projet.zone_geo"
