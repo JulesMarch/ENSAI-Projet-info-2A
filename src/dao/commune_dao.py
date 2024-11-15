@@ -31,7 +31,15 @@ class CommuneDao(metaclass=Singleton):
 
     def find_by_code_insee(code_insee: str):
         """
-        Find a zonage in the database using the name and the geographic level
+        Trouve un zonage dans la base de données en utilisant le code INSEE.
+
+        Args:
+            code_insee (str): Code INSEE de la zone recherchée.
+
+        Returns:
+            dict: Dictionnaire avec le nom, le niveau, le code INSEE, 
+                  le département et la région associés. Lève une 
+                  erreur si aucune zone n'est trouvée.
         """
 
         with DBConnection().connection as connection:
