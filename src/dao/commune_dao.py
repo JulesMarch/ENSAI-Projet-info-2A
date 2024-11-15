@@ -17,18 +17,10 @@ class CommuneDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DO $$                                              "
-                    "BEGIN                                              "
-                    "   IF NOT EXISTS (SELECT 1 FROM pg_class           "
-                    "WHERE relname = 'seq_id_zone_geo') THEN"
-                    "   EXECUTE 'CREATE SEQUENCE seq_id_zone_geo';      "
-                    "   END IF;                                         "
-                    "END $$;                                            "
-
-                    "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
+                    "INSERT INTO projet.zone_geo (nom, niveau, "
                     " code_insee, niveau_superieur) VALUES              "
-                    " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s, "
-                    " %(code_insee)s, %(niveau_superieur)s)             ",
+                    " (%(nom)s, %(niveau)s, %(code_insee)s,             "
+                    "%(niveau_superieur)s)                              ",
                     {
                         "nom": zone["NOM"],
                         "niveau": "Commune",
@@ -39,7 +31,15 @@ class CommuneDao(metaclass=Singleton):
 
     def find_by_code_insee(code_insee: str):
         """
-        Find a zonage in the database using the name and the geographic level
+        Trouve un zonage dans la base de données en utilisant le code INSEE.
+
+        Args:
+            code_insee (str): Code INSEE de la zone recherchée.
+
+        Returns:
+            dict: Dictionnaire avec le nom, le niveau, le code INSEE, 
+                  le département et la région associés. Lève une 
+                  erreur si aucune zone n'est trouvée.
         """
 
         with DBConnection().connection as connection:

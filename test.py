@@ -1,14 +1,46 @@
-from src.dao.point_dao import PointDao, Point
-from src.dao.polygone_dao import PolygoneDao
+# import fiona
 
-test = PointDao()
+# with fiona.open(
+#     "//filer-eleves2/id2505/Cours2A/"
+#     "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03/"
+#     "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03/"
+#     "ADMIN-EXPRESS-COG/1_DONNEES_LIVRAISON_2023-05-03/"
+#     "ADECOG_3-2_SHP_WGS84G_FRA/REGION.shp",
+#     'r'
+# ) as shapefile:
 
-p = Point(0.1, 0.4)
+#     for region in shapefile:
+#         properties = region["properties"]
+#         geometry = region["geometry"]
 
-PointDao.add_point((p.x, p.y))
-PointDao.add_point((p.x, p.y))
+#         type_comp = geometry["type"]
 
-PointDao.add_point((2, 3))
-PointDao.add_point((2, 3))
+#         if type_comp == 'Polygon':
 
-PointDao.add_point((1, 0))
+#             polygon = geometry["coordinates"][0]
+
+#             # print(len(polygon))
+
+#         elif type_comp == 'MultiPolygon':
+
+#             print(geometry)
+
+#             list_polygon = geometry["coordinates"]
+
+#             print(len(list_polygon), type(list_polygon))
+
+#             polygon = list_polygon[0]
+
+#             print(len(polygon), type(polygon))
+
+#             list_point = list_polygon[0][0]
+
+#             print(len(list_point), type(list_point))
+
+#             point = list_polygon[0][0][0]
+
+#             print(len(point), type(point))
+
+L = [[1, 2], [1, 2, 3], [1], [1, 2, 3, 4]]
+indice_max = max(enumerate(L), key=lambda x: len(x[1]))[0]
+print(indice_max)
