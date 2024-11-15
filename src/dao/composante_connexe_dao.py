@@ -57,51 +57,81 @@ class ComposanteConnexeDao(metaclass=Singleton):
         elif type_composante == 'MultiPolygon':
 
             # Il y à plusieurs contours qui définissent la composante connexe
-            indice_max = max(enumerate(L), key=lambda x: len(x[1]))[0]
-
-            contour_principal = L[indice_max]
-
-            for k in range(len(contour_principal)):
-
-                polygon = contour_principal[k]
-                PolygoneDao.add_polygone(polygon)
-
-                with DBConnection().connection as connection:
-                    with connection.cursor() as cursor:
-                        cursor.execute(
-                            "insert into projet.association_connexe_polygone"
-                            " (id_polygone, id_comp_connexe, ordre, creux)  "
-                            "values                                         "
-                            "((select max(id_polygone) from projet.polygone),"
-                            "(select max(id_comp_connexe) from              "
-                            "projet.comp_connexe), %(ordre)s, %(creux)s)    ",
-                            {
-                                'ordre': k,
-                                'creux': False
-                            }
-                        )
-
-            L.pop(indice_max)
 
             for k in range(len(L)):
 
-                creux = L[k][0]
-                PolygoneDao.add_polygone(creux)
+                list_polygon = L[k]
 
-                with DBConnection().connection as connection:
-                    with connection.cursor() as cursor:
-                        cursor.execute(
-                            "insert into projet.association_connexe_polygone"
-                            " (id_polygone, id_comp_connexe, ordre, creux)  "
-                            "values                                         "
-                            "((select max(id_polygone) from projet.polygone),"
-                            "(select max(id_comp_connexe) from              "
-                            "projet.comp_connexe), %(ordre)s, %(creux)s)    ",
-                            {
-                                'ordre': len(contour_principal) + k,
-                                'creux': True
-                            }
-                        )
+                if len(list_polygon) == 1:
+
+                    # il n'y a du'un seul contour dans la composante dans ce cas
+
+                    polygon = list_polygon[0]
+
+                    # Ajout du polygone
+
+                    PolygoneDao.add_polygone(polygon)
+
+                    # Remplissage de la table d'association polygone et composante con
+
+                    with DBConnection().connection as connection:
+                        with connection.cursor() as cursor:
+                            cursor.execute(
+                                "insert into projet.association_connexe_polygone"
+                                " (id_polygone, id_comp_connexe, ordre, creux)  "
+                                "values                                         "
+                                "((select max(id_polygone) from projet.polygone),"
+                                "(select max(id_comp_connexe) from              "
+                                "projet.comp_connexe), %(ordre)s, %(creux)s)    ",
+                                {
+                                    'ordre': 0,
+                                    'creux': False
+                                }
+                            )
+
+                else:
+
+                    polygon = list_polygon[0]
+
+                    PolygoneDao.add_polygone(polygon)
+
+                    with DBConnection().connection as connection:
+                        with connection.cursor() as cursor:
+                            cursor.execute(
+                                "insert into projet.association_connexe_polygone"
+                                " (id_polygone, id_comp_connexe, ordre, creux)  "
+                                "values                                         "
+                                "((select max(id_polygone) from projet.polygone),"
+                                "(select max(id_comp_connexe) from              "
+                                "projet.comp_connexe), %(ordre)s, %(creux)s)    ",
+                                {
+                                    'ordre': k,
+                                    'creux': False
+                                }
+                            )
+
+                    list_creux = list_polygon.pop(0)
+
+                    for k in range(len(list_creux)):
+
+                        creux = L[k][0]
+
+                        PolygoneDao.add_polygone(creux)
+
+                        with DBConnection().connection as connection:
+                            with connection.cursor() as cursor:
+                                cursor.execute(
+                                    "insert into projet.association_connexe_polygone"
+                                    " (id_polygone, id_comp_connexe, ordre, creux)  "
+                                    "values                                         "
+                                    "((select max(id_polygone) from projet.polygone),"
+                                    "(select max(id_comp_connexe) from              "
+                                    "projet.comp_connexe), %(ordre)s, %(creux)s)    ",
+                                    {
+                                        'ordre': 11,
+                                        'creux': True
+                                    }
+                                )
 
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:

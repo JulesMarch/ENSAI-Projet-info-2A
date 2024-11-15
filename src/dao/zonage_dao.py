@@ -20,14 +20,6 @@ class ZonageDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DO $$                                              "
-                    "BEGIN                                              "
-                    "   IF NOT EXISTS (SELECT 1 FROM pg_class           "
-                    "WHERE relname = 'seq_id_zone_geo') THEN"
-                    "   EXECUTE 'CREATE SEQUENCE seq_id_zone_geo';      "
-                    "   END IF;                                         "
-                    "END $$;                                            "
-
                     "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
                     " code_insee, niveau_superieur) VALUES              "
                     " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s, "
@@ -48,7 +40,7 @@ class ZonageDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "select * from projet.point                          "
+                    "select * from projet.zone_geo                       "
                     "   where nom, niveau, code_insee                    ",
                     {
                         "nom": zone["NOM"],
@@ -73,29 +65,14 @@ class ZonageDao(metaclass=Singleton):
                              '"departement", "commune", "arrondissement",' +
                              '"IRIS"')
 
-        with DBConnection().connection as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "select * from projet.zone_geo                      "
-                    " where nom=%(nom)s and niveau=%(niveau)s           ",
-                    {
-                        "nom": nom,
-                        "niveau": niveau
-                    },
-                )
-                res = cursor.fetchall()
+        if niveau == "Région":
+            return RegionDao.find_by_nom(nom)
 
-        resultat_final = []
-        for row in res:
-            infos = {
-                "nom": row["nom"],
-                "niveau": row["niveau"],
-                "code_insee": row["code_insee"],
-                "niveau_superieur": row["niveau_superieur"]
-            }
-            resultat_final.append(infos)
+        elif niveau == "Département":
+            return DepartementDao.find_by_nom(nom)
 
-        return resultat_final
+        elif niveau == "Commune":
+            return CommuneDao.find_by_nom(nom)
 
     def find_by_code_insee(code_insee: str, niveau: str):
         """
@@ -114,35 +91,6 @@ class ZonageDao(metaclass=Singleton):
 
         elif niveau == "Commune":
             return CommuneDao.find_by_code_insee(code_insee)
-
-        # with DBConnection().connection as connection:
-        #     with connection.cursor() as cursor:
-        #         cursor.execute(
-        #             "select * from projet.zone_geo                          "
-        #             " where code_insee=%(code_insee)s and niveau=%(niveau)s ",
-        #             {
-        #                 "code_insee": code_insee,
-        #                 "niveau": niveau
-        #             },
-        #         )
-        #         res = cursor.fetchall()
-
-        # resultat_final = []
-        # for row in res:
-        #     infos = {
-        #         "nom": row["nom"],
-        #         "niveau": row["niveau"],
-        #         "code_insee": row["code_insee"],
-        #         "niveau_superieur": row["niveau_superieur"]
-        #     }
-        #     resultat_final.append(infos)
-
-        # if len(resultat_final) == 0:
-        #     raise ValueError(
-        #         f"Le code donné n'est associé à aucun(e) {niveau}."
-        #     )
-
-        # return resultat_final
 
 
 # test = ZonageDao.find_by_code_insee("35", "Département")

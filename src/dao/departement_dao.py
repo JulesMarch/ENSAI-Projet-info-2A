@@ -68,13 +68,15 @@ class DepartementDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "select * from projet.zone_geo                          "
-                    " where code_insee=%(code_insee)s                       ",
+                    "select * from projet.zone_geo                  "
+                    " where nom=%(nom)s                             ",
                     {
-                        "code_insee": code_insee
+                        "nom": nom
                     },
                 )
                 res = cursor.fetchone()
+
+        resultat_final = None
 
         if res:
 
@@ -86,3 +88,7 @@ class DepartementDao(metaclass=Singleton):
             }
 
             return resultat_final
+
+        raise ValueError(
+                "Le code donné n'est associé à aucune Région."
+            )

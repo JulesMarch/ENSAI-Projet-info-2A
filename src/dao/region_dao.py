@@ -62,6 +62,35 @@ class RegionDao(metaclass=Singleton):
                 "Le code donné n'est associé à aucune Région."
             )
 
+    def find_by_nom(nom: str):
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select * from projet.zone_geo                          "
+                    " where nom=%(nom)s                       ",
+                    {
+                        "nom": nom
+                    },
+                )
+                res = cursor.fetchone()
+
+        resultat_final = None
+
+        if res:
+
+            resultat_final = {
+                "nom": res["nom"],
+                "niveau": res["niveau"],
+                "code_insee": res["code_insee"],
+            }
+
+            return resultat_final
+
+        raise ValueError(
+                "Le nom donné n'est associé à aucune Région."
+            )
+
     def find_region(x: float, y: float):
 
         pt_depart = Point(x=x, y=y)
