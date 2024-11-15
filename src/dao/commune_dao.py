@@ -17,18 +17,10 @@ class CommuneDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DO $$                                              "
-                    "BEGIN                                              "
-                    "   IF NOT EXISTS (SELECT 1 FROM pg_class           "
-                    "WHERE relname = 'seq_id_zone_geo') THEN"
-                    "   EXECUTE 'CREATE SEQUENCE seq_id_zone_geo';      "
-                    "   END IF;                                         "
-                    "END $$;                                            "
-
-                    "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
+                    "INSERT INTO projet.zone_geo (nom, niveau, "
                     " code_insee, niveau_superieur) VALUES              "
-                    " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s, "
-                    " %(code_insee)s, %(niveau_superieur)s)             ",
+                    " (%(nom)s, %(niveau)s, %(code_insee)s,             "
+                    "%(niveau_superieur)s)                              ",
                     {
                         "nom": zone["NOM"],
                         "niveau": "Commune",

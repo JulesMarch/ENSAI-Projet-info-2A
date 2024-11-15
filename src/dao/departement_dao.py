@@ -16,10 +16,10 @@ class DepartementDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "insert into projet.zone_geo (id_zone, nom, niveau, "
+                    "insert into projet.zone_geo (nom, niveau,          "
                     " code_insee, niveau_superieur) VALUES              "
-                    " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s, "
-                    " %(code_insee)s, %(niveau_superieur)s)             ",
+                    " (%(nom)s, %(niveau)s, %(code_insee)s,             "
+                    " %(niveau_superieur)s)                             ",
                     {
                         "nom": zone["NOM"],
                         "niveau": "Département",

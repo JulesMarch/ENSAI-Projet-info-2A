@@ -161,8 +161,8 @@ class RegionDao(metaclass=Singleton):
 # testDunk = RegionDao.find_region(2.3772525, 51.0347708).nom
 # print("Dunkerque :", testDunk)
 
-testStrasb = RegionDao.find_region(7.750589152096361, 48.581766559651534).nom
-print("Strasbourg : ", testStrasb)
+# testStrasb = RegionDao.find_region(7.750589152096361, 48.581766559651534).nom
+# print("Strasbourg : ", testStrasb)
 
 # testMailis = RegionDao.find_region(-3.57675, 47.90345).nom
 # print("Mailis habite en ", testMailis)
