@@ -1,9 +1,12 @@
 from src.utils.singleton import Singleton
 from src.dao.db_connection import DBConnection
 
-from src.dao.region_dao import RegionDao
-from src.dao.departement_dao import DepartementDao
-from src.dao.commune_dao import CommuneDao
+from src.business_object.point import Point
+from src.business_object.zonage import Zonage
+from src.dao.contour_dao import ContourDao
+# from src.dao.region_dao import RegionDao
+# from src.dao.departement_dao import DepartementDao
+# from src.dao.commune_dao import CommuneDao
 
 niveaux = ["Région", "Département", "Commune", "Arrondissement", "IRIS"]
 
@@ -97,61 +100,89 @@ class ZonageDao(metaclass=Singleton):
 
         return resultat_final
 
-    def find_by_code_insee(code_insee: str, niveau: str):
-        """
-        Find a zonage in the database using the name and the geographic level
-        """
-        if niveau not in niveaux:
-            raise ValueError('le niveau doit être un des suivants: "region",' +
-                             '"departement", "commune", "arrondissement",' +
-                             '"IRIS"')
+    # def find_by_code_insee(code_insee: str, niveau: str):
+    #     """
+    #     Find a zonage in the database using the name and the geographic level
+    #     """
+    #     if niveau not in niveaux:
+    #         raise ValueError('le niveau doit être un des suivants: "region",' +
+    #                          '"departement", "commune", "arrondissement",' +
+    #                          '"IRIS"')
 
-        if niveau == "Région":
-            return RegionDao.find_by_code_insee(code_insee)
+    #     if niveau == "Région":
+    #         return RegionDao.find_by_code_insee(code_insee)
 
-        elif niveau == "Département":
-            return DepartementDao.find_by_code_insee(code_insee)
+    #     elif niveau == "Département":
+    #         return DepartementDao.find_by_code_insee(code_insee)
 
-        elif niveau == "Commune":
-            return CommuneDao.find_by_code_insee(code_insee)
+    #     elif niveau == "Commune":
+    #         return CommuneDao.find_by_code_insee(code_insee)
 
-        # with DBConnection().connection as connection:
-        #     with connection.cursor() as cursor:
-        #         cursor.execute(
-        #             "select * from projet.zone_geo                          "
-        #             " where code_insee=%(code_insee)s and niveau=%(niveau)s ",
-        #             {
-        #                 "code_insee": code_insee,
-        #                 "niveau": niveau
-        #             },
-        #         )
-        #         res = cursor.fetchall()
+    def construction_zonage(zone):
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT x, y, creux, id_polygone FROM projet.point "
+                    "JOIN projet.association_polygone_point USING (id_point) "
+                    "JOIN projet.polygone USING (id_polygone) "
+                    "JOIN projet.association_connexe_polygone USING (id_polygone)"
+                    "JOIN projet.comp_connexe USING (id_comp_connexe)"
+                    "JOIN projet.asso_zone_comp_co USING (id_comp_connexe)"
+                    "JOIN projet.zone_geo USING (id_zone) "
+                    "where projet.zone_geo.code_insee =%(code_insee)s"
+                    "ORDER BY projet.association_polygone_point.ordre ASC",
+                    {
+                        "code_insee": zone["code_insee"]
+                    }
+                )
+                pts_perim = cursor.fetchall()
 
-        # resultat_final = []
-        # for row in res:
-        #     infos = {
-        #         "nom": row["nom"],
-        #         "niveau": row["niveau"],
-        #         "code_insee": row["code_insee"],
-        #         "niveau_superieur": row["niveau_superieur"]
-        #     }
-        #     resultat_final.append(infos)
+            print(zone["nom"])
+            print("total : ", len(pts_perim))
+            lst_pts_perim = []
+            lst_pts_creux = []
+            for pt in pts_perim:
+                if not pt["creux"]:
+                    # print(pt["creux"])
+                    lst_pts_perim.append(Point(pt["x"], pt["y"]))
+                else:
+                    # print(pt["id_polygone"])
+                    lst_pts_creux.append([Point(pt["x"], pt["y"]),
+                                         pt["id_polygone"]])
+            print("sans creux : ", len(lst_pts_perim))
+            print("creux : ", len(lst_pts_creux))
 
-        # if len(resultat_final) == 0:
-        #     raise ValueError(
-        #         f"Le code donné n'est associé à aucun(e) {niveau}."
-        #     )
+            print("Etape 1 réussie")
 
-        # return resultat_final
+            # Très long, Dieu sait pourquoi
 
+            lst_poly_creux = []
+            if len(lst_pts_creux) > 0:
+                for i in range(0, max(k[1] for k in lst_pts_creux)):
+                    temp_lst = []
+                    for j in range(len(lst_pts_creux)):
+                        if i == lst_pts_creux[j][1]:
+                            pt = lst_pts_creux.pop(j)
+                            temp_lst.append(pt[0])
+                    lst_poly_creux.append(temp_lst)
 
-# test = ZonageDao.find_by_code_insee("35", "Département")
-# print(test)
+            print("Etape 2 réussie")
 
-# test2 = ZonageDao.find_by_code_insee("34138", "Commune")
-# print(test2)
+            lst_seg_perim = ContourDao.construction_contour(lst_pts_perim)
 
-test3 = ZonageDao.find_by_code_insee("11", "Région")
-print(test3)
+            lst_contours_creux = []
+            for poly in lst_poly_creux:
+                if len(poly) > 0:
+                    temp_cont = ContourDao.construction_contour(poly)
+                    lst_contours_creux.append(temp_cont)
 
-# test4 = ZonageDao.find_by_code_insee("35006", "Commune")
+            print("Etape 3 réussie")
+
+        zone = Zonage(
+            nom=zone["nom"],
+            perimetre=lst_seg_perim,
+            creux=lst_contours_creux,
+            edition_carte="2024"
+        )
+
+        return zone
