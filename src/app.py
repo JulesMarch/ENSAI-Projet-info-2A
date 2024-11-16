@@ -50,6 +50,12 @@ async def get_coord(niveau, x, y):
 
     return resultat_final
 
+@app.get("/zonage/{niveau}/2024/{nom}")
+async def get_nom(niveau, nom):
+    print(niveau, nom)
+    answer = ZonageDao.find_by_nom(str(nom), niveau)
+    return answer
+
 # Lancement de l'application sur le le port 80
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost")

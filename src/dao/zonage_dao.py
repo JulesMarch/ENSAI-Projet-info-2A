@@ -23,14 +23,6 @@ class ZonageDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DO $$                                              "
-                    "BEGIN                                              "
-                    "   IF NOT EXISTS (SELECT 1 FROM pg_class           "
-                    "WHERE relname = 'seq_id_zone_geo') THEN"
-                    "   EXECUTE 'CREATE SEQUENCE seq_id_zone_geo';      "
-                    "   END IF;                                         "
-                    "END $$;                                            "
-
                     "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
                     " code_insee, niveau_superieur) VALUES              "
                     " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s, "
@@ -51,11 +43,13 @@ class ZonageDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "select * from projet.point                          "
-                    "   where nom, niveau, code_insee                    ",
+                    "select * from projet.zone_geo                      "
+                    " where nom=%(nom)s, niveau=%(niveau)s,             "
+                    "code_insee=%(code_insee)s                          ",
                     {
                         "nom": zone["NOM"],
-                        "y": point[1],
+                        "niveau": point[1],
+                        "code_insee": zone["code"]
                     },
                 )
                 res = cursor.fetchone()
@@ -76,29 +70,14 @@ class ZonageDao(metaclass=Singleton):
                              '"departement", "commune", "arrondissement",' +
                              '"IRIS"')
 
-        with DBConnection().connection as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "select * from projet.zone_geo                      "
-                    " where nom=%(nom)s and niveau=%(niveau)s           ",
-                    {
-                        "nom": nom,
-                        "niveau": niveau
-                    },
-                )
-                res = cursor.fetchall()
+        if niveau == "Région":
+            return RegionDao.find_by_nom(nom)
 
-        resultat_final = []
-        for row in res:
-            infos = {
-                "nom": row["nom"],
-                "niveau": row["niveau"],
-                "code_insee": row["code_insee"],
-                "niveau_superieur": row["niveau_superieur"]
-            }
-            resultat_final.append(infos)
+        elif niveau == "Département":
+            return DepartementDao.find_by_nom(nom)
 
-        return resultat_final
+        elif niveau == "Commune":
+            return CommuneDao.find_by_nom(nom)
 
     def find_by_code_insee(code_insee: str, niveau: str):
         """

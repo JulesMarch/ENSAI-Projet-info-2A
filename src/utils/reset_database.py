@@ -21,7 +21,13 @@ class ResetDatabase(metaclass=Singleton):
         #     print(e)
         #     raise
 
-        with open("data/pop_db.py") as f:
+        # with open("data/pop_region.py") as f:
+        #     exec(f.read())
+
+        # with open("data/pop_dep.py") as f:
+        #     exec(f.read())
+
+        with open("data/pop_com.py") as f:
             exec(f.read())
 
         print("Ré-initialisation de la base de données - Terminée")

@@ -98,3 +98,36 @@ class CommuneDao(metaclass=Singleton):
             edition_carte=zone.edition_carte
         )
         return curr_com
+
+    def find_by_nom(nom: str):
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select * from projet.zone_geo      "
+                    " where nom=%(nom)s                 ",
+                    {
+                        "nom": nom
+                    },
+                )
+                res = cursor.fetchone()
+
+        resultat_final = None
+
+        departement = DepartementDao.find_by_code_insee(res["niveau_superieur"])
+
+        if res:
+
+            resultat_final = {
+                "nom": res["nom"],
+                "niveau": res["niveau"],
+                "code_insee": res["code_insee"],
+                "Département": departement["nom"],
+                "Région": departement["Région"]
+            }
+
+            return resultat_final
+
+        raise ValueError(
+                "Le nom donné n'est associé à aucune Région."
+            )
