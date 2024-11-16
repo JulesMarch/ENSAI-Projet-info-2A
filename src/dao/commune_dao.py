@@ -3,6 +3,8 @@ from src.dao.db_connection import DBConnection
 
 from src.dao.region_dao import RegionDao
 from src.dao.departement_dao import DepartementDao
+from src.dao.zonage_dao import ZonageDao
+from src.business_object.commune import Commune
 
 
 class CommuneDao(metaclass=Singleton):
@@ -37,8 +39,8 @@ class CommuneDao(metaclass=Singleton):
             code_insee (str): Code INSEE de la zone recherchée.
 
         Returns:
-            dict: Dictionnaire avec le nom, le niveau, le code INSEE, 
-                  le département et la région associés. Lève une 
+            dict: Dictionnaire avec le nom, le niveau, le code INSEE,
+                  le département et la région associés. Lève une
                   erreur si aucune zone n'est trouvée.
         """
 
@@ -72,3 +74,27 @@ class CommuneDao(metaclass=Singleton):
         raise ValueError(
                 "Le code donné n'est associé à aucune Région."
             )
+
+    def get_all_com_in(id_dep):
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select * from projet.zone_geo                      "
+                    " where niveau= 'Commune' AND niveau_superieur = %(id)s",
+                    {
+                        "id": id_dep
+                    }
+                )
+                res = cursor.fetchall()
+                return res
+
+    def construction_commune(com):
+        zone = ZonageDao.construction_zonage(com)
+        curr_com = Commune(
+            nom=zone.nom,
+            code_postal=com["code_insee"],
+            perimetre=zone.perimetre,
+            creux=zone.creux,
+            edition_carte=zone.edition_carte
+        )
+        return curr_com

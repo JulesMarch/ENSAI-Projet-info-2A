@@ -23,11 +23,13 @@ class Zonage(ABC):
         DD = Segment(p, p2)
         # Détection du nb d'intersections
         nb_inters = 0
-        nb_inters += self.perimetre.comptage_inters(DD)
         for i in self.creux:
             nb_inters += i.comptage_inters(DD)
-            print(i.comptage_inters(DD))
-        print(nb_inters)
+            # print(i.comptage_inters(DD))
+        for j in self.perimetre:
+            nb_inters += j.comptage_inters(DD)
+            # print(j.comptage_inters(DD))
+        # print(nb_inters)
         # Est-ce que le point appartient au zonage ?
         if nb_inters % 2 == 1:
             print("c'est bon !")

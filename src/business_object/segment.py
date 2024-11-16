@@ -46,7 +46,7 @@ class Segment:
 
         if (x_min_self <= x <= x_max_self and y_min_self <= y <= y_max_self and
             x_min_seg <= x <= x_max_seg and y_min_seg <= y <= y_max_seg):
-            print([[x, y], ([seg.p1.x, seg.p1.y], [seg.p2.x, seg.p2.y]), ([self.p1.x, self.p1.y], [self.p2.x, self.p2.y])])
+            # print([[x, y], ([seg.p1.x, seg.p1.y], [seg.p2.x, seg.p2.y]), ([self.p1.x, self.p1.y], [self.p2.x, self.p2.y])])
             return True
 
         return False

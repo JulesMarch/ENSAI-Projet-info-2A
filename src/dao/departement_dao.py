@@ -1,7 +1,9 @@
 from src.utils.singleton import Singleton
 from src.dao.db_connection import DBConnection
+from src.business_object.departement import Departement
 
 from src.dao.region_dao import RegionDao
+from src.dao.zonage_dao import ZonageDao
 
 
 class DepartementDao(metaclass=Singleton):
@@ -86,3 +88,27 @@ class DepartementDao(metaclass=Singleton):
             }
 
             return resultat_final
+
+    def construction_departement(dep):
+        zone = ZonageDao.construction_zonage(dep)
+        curr_dep = Departement(
+            nom=zone.nom,
+            num_dep=dep["code_insee"],
+            perimetre=zone.perimetre,
+            creux=zone.creux,
+            edition_carte=zone.edition_carte
+        )
+        return curr_dep
+
+    def get_all_dep_in(id_reg):
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "select * from projet.zone_geo                      "
+                        " where niveau= 'Département' AND niveau_superieur = %(id)s",
+                        {
+                            "id": id_reg
+                        }
+                    )
+                    res = cursor.fetchall()
+                    return res

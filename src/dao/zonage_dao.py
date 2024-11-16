@@ -100,23 +100,23 @@ class ZonageDao(metaclass=Singleton):
 
         return resultat_final
 
-    # def find_by_code_insee(code_insee: str, niveau: str):
-    #     """
-    #     Find a zonage in the database using the name and the geographic level
-    #     """
-    #     if niveau not in niveaux:
-    #         raise ValueError('le niveau doit être un des suivants: "region",' +
-    #                          '"departement", "commune", "arrondissement",' +
-    #                          '"IRIS"')
+    def find_by_code_insee(code_insee: str, niveau: str):
+        """
+        Find a zonage in the database using the name and the geographic level
+        """
+        if niveau not in niveaux:
+            raise ValueError('le niveau doit être un des suivants: "region",' +
+                             '"departement", "commune", "arrondissement",' +
+                             '"IRIS"')
 
-    #     if niveau == "Région":
-    #         return RegionDao.find_by_code_insee(code_insee)
+        if niveau == "Région":
+            return RegionDao.find_by_code_insee(code_insee)
 
-    #     elif niveau == "Département":
-    #         return DepartementDao.find_by_code_insee(code_insee)
+        elif niveau == "Département":
+            return DepartementDao.find_by_code_insee(code_insee)
 
-    #     elif niveau == "Commune":
-    #         return CommuneDao.find_by_code_insee(code_insee)
+        elif niveau == "Commune":
+            return CommuneDao.find_by_code_insee(code_insee)
 
     def construction_zonage(zone):
         with DBConnection().connection as connection:
@@ -144,7 +144,8 @@ class ZonageDao(metaclass=Singleton):
             for pt in pts_perim:
                 if not pt["creux"]:
                     # print(pt["creux"])
-                    lst_pts_perim.append(Point(pt["x"], pt["y"]))
+                    lst_pts_perim.append([Point(pt["x"], pt["y"]),
+                                         pt["id_polygone"]])
                 else:
                     # print(pt["id_polygone"])
                     lst_pts_creux.append([Point(pt["x"], pt["y"]),
@@ -156,19 +157,32 @@ class ZonageDao(metaclass=Singleton):
 
             # Très long, Dieu sait pourquoi
 
+            lst_poly_perim = []
+            if len(lst_pts_perim) > 0:
+                for i in range(0, max(k[1] for k in lst_pts_perim) + 1):
+                    temp_lst = []
+                    for j in range(0, len(lst_pts_perim)-1):
+                        if i == lst_pts_perim[j][1]:
+                            temp_lst.append(lst_pts_perim[j][0])
+                    if len(temp_lst) > 0 :
+                        lst_poly_perim.append(temp_lst)
+
             lst_poly_creux = []
             if len(lst_pts_creux) > 0:
                 for i in range(0, max(k[1] for k in lst_pts_creux)):
                     temp_lst = []
-                    for j in range(len(lst_pts_creux)):
+                    for j in range(0, len(lst_pts_creux)-1):
                         if i == lst_pts_creux[j][1]:
-                            pt = lst_pts_creux.pop(j)
-                            temp_lst.append(pt[0])
+                            temp_lst.append(lst_pts_creux[j][0])
                     lst_poly_creux.append(temp_lst)
 
             print("Etape 2 réussie")
 
-            lst_seg_perim = ContourDao.construction_contour(lst_pts_perim)
+            lst_contours_perim = []
+            for poly in lst_poly_perim:
+                if len(poly) > 0:
+                    temp_cont = ContourDao.construction_contour(poly)
+                    lst_contours_perim.append(temp_cont)
 
             lst_contours_creux = []
             for poly in lst_poly_creux:
@@ -180,7 +194,7 @@ class ZonageDao(metaclass=Singleton):
 
         zone = Zonage(
             nom=zone["nom"],
-            perimetre=lst_seg_perim,
+            perimetre=lst_contours_perim,
             creux=lst_contours_creux,
             edition_carte="2024"
         )

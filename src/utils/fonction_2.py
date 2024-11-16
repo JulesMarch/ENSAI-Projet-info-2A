@@ -2,6 +2,19 @@
 from src.business_object.point import Point
 # from src.business_object.departement import Departement
 from src.dao.region_dao import RegionDao
+from src.dao.departement_dao import DepartementDao
+from src.dao.commune_dao import CommuneDao
+
+
+def find_by_coord(x: float, y: float, niveau: str):
+    if niveau == "Région":
+        return find_region(x, y)
+
+    elif niveau == "Département":
+        return find_departement(x, y)
+
+    elif niveau == "Commune":
+        return find_commune(x, y)
 
 
 def find_region(x: float, y: float):
@@ -15,62 +28,37 @@ def find_region(x: float, y: float):
             return curr_reg
     raise ValueError("Ce point n'est pas situé en France")
 
+
 # cas pour departement
 
+def find_departement(x: float, y: float):
 
-# def find_departement(x: float, y: float):
-#     reg = find_region(x, y)
-#     pt_depart = Point(x=x, y=y)
+    pt_depart = Point(x=x, y=y)
 
-#     with DBConnection().connection as connection:
-#         with connection.cursor() as cursor:
-#             cursor.execute(
-#                 "select * from projet.zone_geo                      "
-#                 " where niveau= Département AND niveau_supérieur =", reg
-#             )
-#             res = cursor.fetchall()
+    reg = find_region(x,y)
 
-#     for dep in res:
-#         curr_dep = Departement(
-#             nom=dep["NOM"],
-#             num_rgn=dep["CODE_INSEE"],
-#             perimetre="tbd",
-#             creux="tbd",
-#             edition_carte="2024"
-#         )
-
-#         if curr_dep.appartient_zonage(pt_depart):
-#             print("Ce point se trouve en ", + curr_dep.nom)
-#             return curr_dep.num_rgn
-
-# # cas pour commune
+    lst_dep = DepartementDao.get_all_dep_in(reg.num_rgn)
+    for dep in lst_dep:
+        curr_dep = DepartementDao.construction_departement(dep)
+        if curr_dep.appartient_zonage(pt_depart):
+            return (curr_dep, reg)
+    raise ValueError("Ce point n'est pas situé en France")
 
 
-# def find_commune(x: float, y: float):
-#     dep = find_departement(x, y)
-#     pt_depart = Point(x=x, y=y)
+# cas pour commune
 
-#     with DBConnection().connection as connection:
-#         with connection.cursor() as cursor:
-#             cursor.execute(
-#                 "select * from projet.zone_geo                      "
-#                 " where niveau= Commune AND niveau_supérieur =", dep
-#             )
-#             res = cursor.fetchall()
+def find_commune(x: float, y: float):
 
-#     for com in res:
-#         curr_com = Departement(
-#             nom=com["NOM"],
-#             num_rgn=com["CODE_INSEE"],
-#             perimetre="tbd",
-#             creux="tbd",
-#             edition_carte="2024"
-#         )
+    pt_depart = Point(x=x, y=y)
 
-#         if curr_com.appartient_zonage(pt_depart):
-#             print("Ce point se trouve en ", + curr_com.nom)
-#             return curr_com.num_rgn
+    dep = find_departement(x,y)[0]
 
+    lst_com = CommuneDao.get_all_com_in(dep.num_dep)
+    for com in lst_com:
+        curr_com = CommuneDao.construction_commune(com)
+        if curr_com.appartient_zonage(pt_depart):
+            return (curr_com, dep)
+    raise ValueError("Ce point n'est pas situé en France")
 
 # testTE = find_region(2.2945006, 48.8582599).nom
 # print("Tour eiffel :", testTE)
@@ -84,11 +72,11 @@ def find_region(x: float, y: float):
 # testENSAI = find_region(-1.7420038, 48.0511495).nom
 # print("L'ENSAI : ", testENSAI)
 
-# testMailis = find_region(-3.57675, 47.90345).nom
+# testMailis = find_departement(-3.57675, 47.90345).nom
 # print("Mailis habite en ", testMailis)
 
-testrand = find_region(-0.9848975978939434, 48.998783121883186).nom
-print("Ville dans la Manche au pif :", testrand)
+# testrand = find_region(-1.5874953, 49.6259896).nom
+# print("Ville dans la Manche au pif :", testrand)
 
 # testBdx = find_region(-0.5787921, 44.8228784).nom
 # print("Bordeaux :", testBdx)
@@ -98,3 +86,12 @@ print("Ville dans la Manche au pif :", testrand)
 
 # testTls = find_region(1.4442469, 43.6044622).nom
 # print("Toulouse :", testTls)
+
+# testNantes = find_region(-1.4921233, 47.2971979).nom
+# print("Carquefou :", testNantes)
+
+# testIleNormande = find_region(-1.7967338631145924, 48.87806677986568).nom
+# print("Aneret :", testIleNormande)
+
+# testReux = find_by_coord(0.1522222, 49.2747222, "Commune")
+# print("Reux :", testReux[0].nom)
