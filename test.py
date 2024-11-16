@@ -1,4 +1,5 @@
 import fiona
+from src.dao.composante_connexe_dao import ComposanteConnexeDao
 
 with fiona.open(
     "//filer-eleves2/id2505/Cours2A/"
@@ -40,3 +41,13 @@ with fiona.open(
             point = list_polygon[0][0][0]
 
             print(len(point), type(point))
+
+L = [
+        [
+            [(6, 12), (5, 8), (9, 15)]
+        ],
+        [
+            [(1, 2), (3, 4), (5, 6)], [(0, 3), (10, 12), (11, 14)]
+        ]
+]
+ComposanteConnexeDao.add_composante_connexe(L, "MultiPolygon")

@@ -43,11 +43,13 @@ class ZonageDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "select * from projet.zone_geo                       "
-                    "   where nom, niveau, code_insee                    ",
+                    "select * from projet.zone_geo                      "
+                    " where nom=%(nom)s, niveau=%(niveau)s,             "
+                    "code_insee=%(code_insee)s                          ",
                     {
                         "nom": zone["NOM"],
-                        "y": point[1],
+                        "niveau": point[1],
+                        "code_insee": zone["code"]
                     },
                 )
                 res = cursor.fetchone()
@@ -77,23 +79,23 @@ class ZonageDao(metaclass=Singleton):
         elif niveau == "Commune":
             return CommuneDao.find_by_nom(nom)
 
-    # def find_by_code_insee(code_insee: str, niveau: str):
-    #     """
-    #     Find a zonage in the database using the name and the geographic level
-    #     """
-    #     if niveau not in niveaux:
-    #         raise ValueError('le niveau doit être un des suivants: "region",' +
-    #                          '"departement", "commune", "arrondissement",' +
-    #                          '"IRIS"')
+    def find_by_code_insee(code_insee: str, niveau: str):
+        """
+        Find a zonage in the database using the name and the geographic level
+        """
+        if niveau not in niveaux:
+            raise ValueError('le niveau doit être un des suivants: "region",' +
+                             '"departement", "commune", "arrondissement",' +
+                             '"IRIS"')
 
-    #     if niveau == "Région":
-    #         return RegionDao.find_by_code_insee(code_insee)
+        if niveau == "Région":
+            return RegionDao.find_by_code_insee(code_insee)
 
-    #     elif niveau == "Département":
-    #         return DepartementDao.find_by_code_insee(code_insee)
+        elif niveau == "Département":
+            return DepartementDao.find_by_code_insee(code_insee)
 
-    #     elif niveau == "Commune":
-    #         return CommuneDao.find_by_code_insee(code_insee)
+        elif niveau == "Commune":
+            return CommuneDao.find_by_code_insee(code_insee)
 
     def construction_zonage(zone):
         with DBConnection().connection as connection:

@@ -87,8 +87,8 @@ def find_region(x: float, y: float):
 # testMailis = find_region(-3.57675, 47.90345).nom
 # print("Mailis habite en ", testMailis)
 
-testrand = find_region(-0.9848975978939434, 48.998783121883186).nom
-print("Ville dans la Manche au pif :", testrand)
+# testrand = find_region(-0.9848975978939434, 48.998783121883186).nom
+# print("Ville dans la Manche au pif :", testrand)
 
 # testBdx = find_region(-0.5787921, 44.8228784).nom
 # print("Bordeaux :", testBdx)

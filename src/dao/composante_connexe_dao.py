@@ -64,7 +64,7 @@ class ComposanteConnexeDao(metaclass=Singleton):
 
                 if len(list_polygon) == 1:
 
-                    # il n'y a du'un seul contour dans la composante dans ce cas
+                    # Ll n'y a pas de creux dans ce cas
 
                     polygon = list_polygon[0]
 
@@ -72,7 +72,7 @@ class ComposanteConnexeDao(metaclass=Singleton):
 
                     PolygoneDao.add_polygone(polygon)
 
-                    # Remplissage de la table d'association polygone et composante con
+                    # Remplissage de l'association polygone et composante con
 
                     with DBConnection().connection as connection:
                         with connection.cursor() as cursor:
@@ -84,12 +84,14 @@ class ComposanteConnexeDao(metaclass=Singleton):
                                 "(select max(id_comp_connexe) from              "
                                 "projet.comp_connexe), %(ordre)s, %(creux)s)    ",
                                 {
-                                    'ordre': 0,
+                                    'ordre': k,
                                     'creux': False
                                 }
                             )
 
                 else:
+
+                    # Il y a des creux à ajouter
 
                     polygon = list_polygon[0]
 
@@ -110,11 +112,15 @@ class ComposanteConnexeDao(metaclass=Singleton):
                                 }
                             )
 
-                    list_creux = list_polygon.pop(0)
+                    # On garde la sous-liste composée uniquement de creux
 
-                    for k in range(len(list_creux)):
+                    list_polygon.pop(0)
+                    print(list_polygon)
 
-                        creux = L[k][0]
+                    for i in range(len(list_polygon)):
+
+                        creux = list_polygon[i]
+                        print(creux)
 
                         PolygoneDao.add_polygone(creux)
 
@@ -128,7 +134,7 @@ class ComposanteConnexeDao(metaclass=Singleton):
                                     "(select max(id_comp_connexe) from              "
                                     "projet.comp_connexe), %(ordre)s, %(creux)s)    ",
                                     {
-                                        'ordre': 11,
+                                        'ordre': k + i,
                                         'creux': True
                                     }
                                 )
