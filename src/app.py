@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 import uvicorn
 
-from src.utils.fonction_1 import find_by_code_insee
-from src.utils.fonction_2 import find_by_coord
+from src.services.fonction_1 import find_by_code_insee, find_by_nom
+from src.services.fonction_2 import find_by_coord
 
 
 test = find_by_code_insee("11", "Région")
@@ -20,7 +20,7 @@ async def root():
     return {"message": "Bienvenue sur notre API"}
 
 
-@app.get("/zonage/{niveau}/2024/{code_insee}")
+@app.get("/zonageparcode/{niveau}/2024/{code_insee}")
 async def get_zone(niveau, code_insee):
     print(niveau, code_insee)
     answer = find_by_code_insee(str(code_insee), niveau)
@@ -50,10 +50,10 @@ async def get_coord(niveau, x, y):
 
     return resultat_final
 
-@app.get("/zonage/{niveau}/2024/{nom}")
+@app.get("/zonageparnom/{niveau}/2024/{nom}")
 async def get_nom(niveau, nom):
     print(niveau, nom)
-    answer = ZonageDao.find_by_nom(str(nom), niveau)
+    answer = find_by_nom(str(nom), niveau)
     return answer
 
 # Lancement de l'application sur le le port 80

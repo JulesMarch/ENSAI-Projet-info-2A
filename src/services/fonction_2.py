@@ -75,11 +75,7 @@ def find_commune(x: float, y: float):
 # testMailis = find_departement(-3.57675, 47.90345).nom
 # print("Mailis habite en ", testMailis)
 
-<<<<<<< HEAD
-# testrand = find_region(-1.5874953, 49.6259896).nom
-=======
 # testrand = find_region(-0.9848975978939434, 48.998783121883186).nom
->>>>>>> f0f7de14bdbd0a112800e8559e6886b28fb2ba63
 # print("Ville dans la Manche au pif :", testrand)
 
 # testBdx = find_region(-0.5787921, 44.8228784).nom
