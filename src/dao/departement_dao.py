@@ -60,7 +60,7 @@ class DepartementDao(metaclass=Singleton):
             return resultat_final
 
         raise ValueError(
-                "Le code donné n'est associé à aucune Région."
+                "Le code donné n'est associé à aucun Département."
             )
 
     def find_by_nom(nom: str):

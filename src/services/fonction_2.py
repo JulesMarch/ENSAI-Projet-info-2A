@@ -5,20 +5,24 @@ from src.dao.region_dao import RegionDao
 from src.dao.departement_dao import DepartementDao
 from src.dao.commune_dao import CommuneDao
 
+niveaux_possibles = ["Commune", "Département", "Région"]
 
-def find_by_coord(x: float, y: float, niveau: str):
+
+def find_by_coord(longitude: float, latitude: float, niveau: str):
+    if niveau not in niveaux_possibles:
+        raise ValueError(f'Le niveau doit être dans {niveaux_possibles}')
+
     if niveau == "Région":
-        return find_region(x, y)
+        return find_region(longitude, latitude)
 
     elif niveau == "Département":
-        return find_departement(x, y)
+        return find_departement(longitude, latitude)
 
     elif niveau == "Commune":
-        return find_commune(x, y)
+        return find_commune(longitude, latitude)
 
 
 def find_region(x: float, y: float):
-
     pt_depart = Point(x=x, y=y)
 
     lst_reg = RegionDao.get_all_regions()
@@ -35,7 +39,7 @@ def find_departement(x: float, y: float):
 
     pt_depart = Point(x=x, y=y)
 
-    reg = find_region(x,y)
+    reg = find_region(x, y)
 
     lst_dep = DepartementDao.get_all_dep_in(reg.num_rgn)
     for dep in lst_dep:
@@ -51,7 +55,7 @@ def find_commune(x: float, y: float):
 
     pt_depart = Point(x=x, y=y)
 
-    dep = find_departement(x,y)[0]
+    dep = find_departement(x, y)[0]
 
     lst_com = CommuneDao.get_all_com_in(dep.num_dep)
     for com in lst_com:

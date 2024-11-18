@@ -1,7 +1,5 @@
 from src.utils.singleton import Singleton
 from src.dao.db_connection import DBConnection
-
-from src.dao.region_dao import RegionDao
 from src.dao.departement_dao import DepartementDao
 from src.dao.zonage_dao import ZonageDao
 from src.business_object.commune import Commune
@@ -57,6 +55,11 @@ class CommuneDao(metaclass=Singleton):
 
         resultat_final = None
 
+        if res == None:
+            raise ValueError(
+                "Le code donné n'est associé à aucune Commune."
+            )
+
         departement = DepartementDao.find_by_code_insee(res["niveau_superieur"])
 
         if res:
@@ -70,10 +73,6 @@ class CommuneDao(metaclass=Singleton):
             }
 
             return resultat_final
-
-        raise ValueError(
-                "Le code donné n'est associé à aucune Région."
-            )
 
     def get_all_com_in(id_dep):
         with DBConnection().connection as connection:

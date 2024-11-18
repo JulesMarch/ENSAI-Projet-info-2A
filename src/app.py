@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 import uvicorn
 
 from src.services.fonction_1 import find_by_code_insee, find_by_nom
@@ -19,19 +20,31 @@ app = FastAPI()
 async def root():
     return {"message": "Bienvenue sur notre API"}
 
+# Gestionnaire d'exceptions global
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    # Renvoyer un message standardisé en cas d'erreur
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Une erreur s'est produite",
+            "detail": str(exc),
+        },
+    )
 
 @app.get("/zonageparcode/{niveau}/2024/{code_insee}")
 async def get_zone(niveau, code_insee):
+
     print(niveau, code_insee)
     answer = find_by_code_insee(str(code_insee), niveau)
     return answer
 
 
-@app.get("/coordonees/{niveau}/2024/{x}/{y}")
-async def get_coord(niveau, x, y):
-    answer = find_by_coord(float(x), float(y), niveau)
+@app.get("/coordonees/{niveau}/2024/{longitude}/{latitude}")
+async def get_coord(niveau, longitude, latitude):
+    answer = find_by_coord(float(longitude), float(latitude), niveau)
     resultat_final = {
-        "coordonées": (float(x), float(y)),
+        "coordonées": (float(longitude), float(latitude)),
         "niveau": niveau,
     }
     if niveau == "Région":

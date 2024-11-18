@@ -4,9 +4,7 @@ from src.dao.db_connection import DBConnection
 from src.business_object.point import Point
 from src.business_object.zonage import Zonage
 from src.dao.contour_dao import ContourDao
-# from src.dao.region_dao import RegionDao
-# from src.dao.departement_dao import DepartementDao
-# from src.dao.commune_dao import CommuneDao
+
 
 niveaux = ["Région", "Département", "Commune", "Arrondissement", "IRIS"]
 
@@ -23,6 +21,14 @@ class ZonageDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
+                    "DO $$                                              "
+                    "BEGIN                                              "
+                    "   IF NOT EXISTS (SELECT 1 FROM pg_class           "
+                    "WHERE relname = 'seq_id_zone_geo') THEN"
+                    "   EXECUTE 'CREATE SEQUENCE seq_id_zone_geo';      "
+                    "   END IF;                                         "
+                    "END $$;                                            "
+
                     "INSERT INTO projet.zone_geo (id_zone, nom, niveau, "
                     " code_insee, niveau_superieur) VALUES              "
                     " (nextval('seq_id_zone_geo'), %(nom)s, %(niveau)s, "
@@ -43,13 +49,11 @@ class ZonageDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "select * from projet.zone_geo                      "
-                    " where nom=%(nom)s, niveau=%(niveau)s,             "
-                    "code_insee=%(code_insee)s                          ",
+                    "select * from projet.point                          "
+                    "   where nom, niveau, code_insee                    ",
                     {
                         "nom": zone["NOM"],
-                        "niveau": point[1],
-                        "code_insee": zone["code"]
+                        "y": point[1],
                     },
                 )
                 res = cursor.fetchone()
@@ -59,43 +63,6 @@ class ZonageDao(metaclass=Singleton):
             return True
 
         return False
-
-    def find_by_nom(nom: str, niveau: str):
-        """
-        Find a zonage in the database using the name and the geographic level
-        """
-
-        if niveau not in niveaux:
-            raise ValueError('le niveau doit être un des suivants: "region",' +
-                             '"departement", "commune", "arrondissement",' +
-                             '"IRIS"')
-
-        if niveau == "Région":
-            return RegionDao.find_by_nom(nom)
-
-        elif niveau == "Département":
-            return DepartementDao.find_by_nom(nom)
-
-        elif niveau == "Commune":
-            return CommuneDao.find_by_nom(nom)
-
-    def find_by_code_insee(code_insee: str, niveau: str):
-        """
-        Find a zonage in the database using the name and the geographic level
-        """
-        if niveau not in niveaux:
-            raise ValueError('le niveau doit être un des suivants: "region",' +
-                             '"departement", "commune", "arrondissement",' +
-                             '"IRIS"')
-
-        if niveau == "Région":
-            return RegionDao.find_by_code_insee(code_insee)
-
-        elif niveau == "Département":
-            return DepartementDao.find_by_code_insee(code_insee)
-
-        elif niveau == "Commune":
-            return CommuneDao.find_by_code_insee(code_insee)
 
     def construction_zonage(zone):
         with DBConnection().connection as connection:
@@ -119,40 +86,55 @@ class ZonageDao(metaclass=Singleton):
             print(zone["nom"])
             print("total : ", len(pts_perim))
             lst_pts_perim = []
+            lst_poly_perim_id = []
             lst_pts_creux = []
+            lst_poly_creux_id = []
             for pt in pts_perim:
                 if not pt["creux"]:
                     # print(pt["creux"])
                     lst_pts_perim.append([Point(pt["x"], pt["y"]),
                                          pt["id_polygone"]])
+                    if pt["id_polygone"] not in lst_poly_perim_id:
+                        lst_poly_perim_id.append(pt["id_polygone"])
                 else:
                     # print(pt["id_polygone"])
                     lst_pts_creux.append([Point(pt["x"], pt["y"]),
                                          pt["id_polygone"]])
+                    if pt["id_polygone"] not in lst_poly_creux_id:
+                        lst_poly_creux_id.append(pt["id_polygone"])
             print("sans creux : ", len(lst_pts_perim))
             print("creux : ", len(lst_pts_creux))
 
             print("Etape 1 réussie")
 
-            # Très long, Dieu sait pourquoi
+            points_perim_dict = {}
+            for point in lst_pts_perim:
+                # point[1] est la clé, et on stocke toutes les valeurs associées dans une liste
+                if point[1] not in points_perim_dict:
+                    points_perim_dict[point[1]] = []
+                points_perim_dict[point[1]].append(point[0])
 
+            # Construire lst_poly_perim
             lst_poly_perim = []
-            if len(lst_pts_perim) > 0:
-                for i in range(0, max(k[1] for k in lst_pts_perim) + 1):
-                    temp_lst = []
-                    for j in range(0, len(lst_pts_perim)-1):
-                        if i == lst_pts_perim[j][1]:
-                            temp_lst.append(lst_pts_perim[j][0])
-                    if len(temp_lst) > 0 :
-                        lst_poly_perim.append(temp_lst)
+            for i in lst_poly_perim_id:
+                # Récupérer les points correspondant directement depuis le dictionnaire
+                temp_lst = points_perim_dict.get(i, [])
+                if temp_lst:
+                    lst_poly_perim.append(temp_lst)
 
+            points_creux_dict = {}
+            for point in lst_pts_creux:
+                # point[1] est la clé, et on stocke toutes les valeurs associées dans une liste
+                if point[1] not in points_creux_dict:
+                    points_creux_dict[point[1]] = []
+                points_creux_dict[point[1]].append(point[0])
+
+            # Construire lst_poly_perim
             lst_poly_creux = []
-            if len(lst_pts_creux) > 0:
-                for i in range(0, max(k[1] for k in lst_pts_creux)):
-                    temp_lst = []
-                    for j in range(0, len(lst_pts_creux)-1):
-                        if i == lst_pts_creux[j][1]:
-                            temp_lst.append(lst_pts_creux[j][0])
+            for i in lst_poly_creux_id:
+                # Récupérer les points correspondant directement depuis le dictionnaire
+                temp_lst = points_creux_dict.get(i, [])
+                if temp_lst:
                     lst_poly_creux.append(temp_lst)
 
             print("Etape 2 réussie")
