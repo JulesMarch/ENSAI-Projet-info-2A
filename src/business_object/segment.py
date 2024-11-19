@@ -38,10 +38,8 @@ class Segment:
             y = a1*x+b1
 
         # Bornes des intervalles d'acceptation
-        x_min_self, x_max_self = min(self.p1.x, self.p2.x),
-        max(self.p1.x, self.p2.x)
-        y_min_self, y_max_self = min(self.p1.y, self.p2.y),
-        max(self.p1.y, self.p2.y)
+        x_min_self, x_max_self = min(self.p1.x, self.p2.x), max(self.p1.x, self.p2.x)
+        y_min_self, y_max_self = min(self.p1.y, self.p2.y), max(self.p1.y, self.p2.y)
         x_min_seg, x_max_seg = min(seg.p1.x, seg.p2.x), max(seg.p1.x, seg.p2.x)
         y_min_seg, y_max_seg = min(seg.p1.y, seg.p2.y), max(seg.p1.y, seg.p2.y)
 

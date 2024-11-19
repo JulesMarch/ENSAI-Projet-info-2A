@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from typing import List
+from typing import Tuple
 import uvicorn
 
 from src.services.fonction_1 import find_by_code_insee, find_by_nom
@@ -43,10 +45,10 @@ async def get_zone(niveau, code_insee):
 
 
 @app.get("/coordonees/{niveau}/2024/{longitude}/{latitude}")
-async def get_coord(niveau, longitude, latitude):
+async def find_coord(niveau: str, latitude: float, longitude: float):
     answer = find_by_coord(float(longitude), float(latitude), niveau)
     resultat_final = {
-        "coordonées": (float(longitude), float(latitude)),
+        "coordonées": (float(latitude), float(longitude)),
         "niveau": niveau,
     }
     if niveau == "Région":
@@ -71,6 +73,38 @@ async def get_nom(niveau, nom):
     print(niveau, nom)
     answer = find_by_nom(str(nom), niveau)
     return answer
+
+
+@app.post("/listepoints/")
+async def find_points_loc(points: List[Tuple[float, float, str]]):
+    dic_retour = {}
+    print(len(points))
+    for i in range(0, len(points)):
+        answer = find_by_coord(
+            float(points[i][1]), float(points[i][0]), points[i][2])
+        niveau = points[i][2]
+        resultat_final = {}
+        resultat_final = {
+            "coordonées": (float(points[i][0]), float(points[i][1])),
+            "niveau": niveau,
+        }
+        if niveau == "Région":
+            resultat_final["nom"] = answer.nom
+            resultat_final["code_insee"] = answer.num_rgn
+
+        if niveau == "Département":
+            resultat_final["nom"] = answer[0].nom
+            resultat_final["code_insee"] = answer[0].num_dep
+            resultat_final["région"] = answer[1].nom
+
+        if niveau == "Commune":
+            resultat_final["nom"] = answer[0].nom
+            resultat_final["code_insee"] = answer[0].code_postal
+            resultat_final["département"] = answer[1].nom
+
+        print("point trouvé !")
+        dic_retour["Point " + str(i + 1)] = resultat_final
+    return dic_retour
 
 # Lancement de l'application sur le le port 80
 if __name__ == "__main__":

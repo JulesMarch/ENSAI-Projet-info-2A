@@ -64,6 +64,7 @@ def find_commune(x: float, y: float):
             return (curr_com, dep)
     raise ValueError("Ce point n'est pas situé en France")
 
+
 # testTE = find_region(2.2945006, 48.8582599).nom
 # print("Tour eiffel :", testTE)
 
@@ -99,3 +100,6 @@ def find_commune(x: float, y: float):
 
 # testReux = find_by_coord(0.1522222, 49.2747222, "Commune")
 # print("Reux :", testReux[0].nom)
+
+# test_enclave = find_by_coord(4.967497754896986, 44.35637360344542, "Région")
+# print(test_enclave[0].nom)

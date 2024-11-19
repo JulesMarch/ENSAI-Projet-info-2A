@@ -58,7 +58,3 @@ def find_by_nom(nom: str, niveau: str):
             "niveau_superieur": row["niveau_superieur"]
         }
         return infos
-
-
-test = find_by_nom("Gironde", "Département")
-print(test)

@@ -29,7 +29,7 @@ class Zonage(ABC):
         for j in self.perimetre:
             nb_inters += j.comptage_inters(DD)
             # print(j.comptage_inters(DD))
-        # print(nb_inters)
+        print(nb_inters)
         # Est-ce que le point appartient au zonage ?
         if nb_inters % 2 == 1:
             print("c'est bon !")
