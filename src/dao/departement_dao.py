@@ -9,8 +9,11 @@ from src.dao.zonage_dao import ZonageDao
 class DepartementDao(metaclass=Singleton):
     def add_departement(zone: dict):
         """
-        Add a geographical zone to the database
-            (works only if the zone is not already in the database)
+        Ajoute une zone géographique à la base de donnée
+        
+        Args:
+            zone (dict): Dictionnaire contenant les informations sur 
+            la zone avec les clés "NOM", "INSEE_DEP", et "INSEE_REG"
         """
 
         # if not ZonageDao.est_dans(zone):
@@ -32,7 +35,14 @@ class DepartementDao(metaclass=Singleton):
 
     def find_by_code_insee(code_insee: str):
         """
-        Find a zonage in the database using the name and the geographic level
+        Trouve un zonage dans la base de données en utilisant un nom et un niveau géographique
+
+       Args:
+        code_insee (str): Code INSEE de la zone à rechercher.
+
+        Returns:
+            dict: Dictionnaire contenant les informations de la zone,
+              incluant le nom, le niveau, le code INSEE, et la région. 
         """
 
         with DBConnection().connection as connection:
