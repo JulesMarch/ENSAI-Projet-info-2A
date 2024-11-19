@@ -27,10 +27,10 @@ def pytest_configure():
 
     # Point
 
-    pytest.point_0 = Point(x=0, y=0)
+    pytest.tour_eiffel = Point(x=2.29448, y=40.1316)
 
-    pytest.point_1 = Point(x=100, y=0)
+    pytest.ensae = Point(x=2.2076, y=48.7110)
 
-    pytest.point_2 = Point(x=0, y=100)
+    pytest.mont_st_michel = Point(x=1.5115, y=48.6361)
 
     pytest.point_3 = Point(x=100, y=100)
