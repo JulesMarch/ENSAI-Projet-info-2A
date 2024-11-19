@@ -20,6 +20,7 @@ app = FastAPI()
 async def root():
     return {"message": "Bienvenue sur notre API"}
 
+
 # Gestionnaire d'exceptions global
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
@@ -31,6 +32,7 @@ async def global_exception_handler(request, exc):
             "detail": str(exc),
         },
     )
+
 
 @app.get("/zonageparcode/{niveau}/2024/{code_insee}")
 async def get_zone(niveau, code_insee):
@@ -62,6 +64,7 @@ async def get_coord(niveau, longitude, latitude):
         resultat_final["département"] = answer[1].nom
 
     return resultat_final
+
 
 @app.get("/zonageparnom/{niveau}/2024/{nom}")
 async def get_nom(niveau, nom):

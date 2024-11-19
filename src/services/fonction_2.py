@@ -73,7 +73,7 @@ def find_commune(x: float, y: float):
 # testStrasb = find_region(7.750589152096361, 48.581766559651534).nom
 # print("Strasbourg : ", testStrasb)
 
-# testENSAI = find_region(-1.7420038, 48.0511495).nom
+# testENSAI = find_departement(-1.7420038, 48.0511495).nom
 # print("L'ENSAI : ", testENSAI)
 
 # testMailis = find_departement(-3.57675, 47.90345).nom

@@ -55,12 +55,13 @@ class CommuneDao(metaclass=Singleton):
 
         resultat_final = None
 
-        if res == None:
+        if res is None:
             raise ValueError(
                 "Le code donné n'est associé à aucune Commune."
             )
 
-        departement = DepartementDao.find_by_code_insee(res["niveau_superieur"])
+        departement = DepartementDao.find_by_code_insee(
+            res["niveau_superieur"])
 
         if res:
 
@@ -113,7 +114,8 @@ class CommuneDao(metaclass=Singleton):
 
         resultat_final = None
 
-        departement = DepartementDao.find_by_code_insee(res["niveau_superieur"])
+        departement = DepartementDao.find_by_code_insee(
+            res["niveau_superieur"])
 
         if res:
 

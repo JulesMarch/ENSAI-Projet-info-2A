@@ -18,9 +18,11 @@ with fiona.open(
         geometry = element["geometry"]
         print(properties)
         print(geometry)
-        if geometry["type"]=='MultiPolygon':
-            print(type(geometry["coordinates"][0]), len(geometry["coordinates"][0]))
-            print(type(geometry["coordinates"][1][0]), len(geometry["coordinates"][1]))
+        if geometry["type"] == 'MultiPolygon':
+            print(type(geometry["coordinates"][0]),
+                  len(geometry["coordinates"][0]))
+            print(type(geometry["coordinates"][1][0]),
+                  len(geometry["coordinates"][1]))
             print(geometry["coordinates"][1])
-            print(type(geometry["coordinates"][1][0][0]), len(geometry["coordinates"][1][0][0]))
-
+            print(type(geometry["coordinates"][1][0][0]),
+                  len(geometry["coordinates"][1][0][0]))

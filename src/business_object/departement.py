@@ -9,6 +9,7 @@ class Departement(Zonage):
         nom: str,
         perimetre: list[Segment],
         creux,
-        edition_carte: int):
-        super().__init__(nom, perimetre, creux, edition_carte)  # Appel du constructeur de Zonage
+        edition_carte: int
+    ):
+        super().__init__(nom, perimetre, creux, edition_carte)
         self.num_dep = num_dep

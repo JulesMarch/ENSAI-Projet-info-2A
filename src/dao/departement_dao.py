@@ -54,7 +54,8 @@ class DepartementDao(metaclass=Singleton):
                 "nom": res["nom"],
                 "niveau": res["niveau"],
                 "code_insee": res["code_insee"],
-                "Région": RegionDao.find_by_code_insee(res["niveau_superieur"])["nom"]
+                "Région": RegionDao.find_by_code_insee(
+                    res["niveau_superieur"])["nom"]
             }
 
             return resultat_final
@@ -86,7 +87,8 @@ class DepartementDao(metaclass=Singleton):
                 "nom": res["nom"],
                 "niveau": res["niveau"],
                 "code_insee": res["code_insee"],
-                "Région": RegionDao.find_by_code_insee(res["niveau_superieur"])["nom"]
+                "Région": RegionDao.find_by_code_insee(
+                    res["niveau_superieur"])["nom"]
             }
 
             return resultat_final
@@ -103,14 +105,15 @@ class DepartementDao(metaclass=Singleton):
         return curr_dep
 
     def get_all_dep_in(id_reg):
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "select * from projet.zone_geo                      "
-                        " where niveau= 'Département' AND niveau_superieur = %(id)s",
-                        {
-                            "id": id_reg
-                        }
-                    )
-                    res = cursor.fetchall()
-                    return res
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select * from projet.zone_geo                      "
+                    " where niveau= 'Département' AND niveau_superieur"
+                    " = %(id)s",
+                    {
+                        "id": id_reg
+                    }
+                )
+                res = cursor.fetchall()
+                return res

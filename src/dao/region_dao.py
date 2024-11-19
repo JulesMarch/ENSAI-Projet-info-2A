@@ -1,7 +1,4 @@
 from src.utils.singleton import Singleton
-from src.business_object.point import Point
-from src.business_object.segment import Segment
-from src.business_object.contour import Contour
 from src.business_object.region import Region
 from src.dao.db_connection import DBConnection
 from src.dao.zonage_dao import ZonageDao

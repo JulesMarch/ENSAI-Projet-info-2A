@@ -52,8 +52,7 @@ class ZonageDao(metaclass=Singleton):
                     "select * from projet.point                          "
                     "   where nom, niveau, code_insee                    ",
                     {
-                        "nom": zone["NOM"],
-                        "y": point[1],
+                        "nom": zone["NOM"]
                     },
                 )
                 res = cursor.fetchone()
@@ -71,7 +70,8 @@ class ZonageDao(metaclass=Singleton):
                     "SELECT x, y, creux, id_polygone FROM projet.point "
                     "JOIN projet.association_polygone_point USING (id_point) "
                     "JOIN projet.polygone USING (id_polygone) "
-                    "JOIN projet.association_connexe_polygone USING (id_polygone)"
+                    "JOIN projet.association_connexe_polygone USING"
+                    "(id_polygone)"
                     "JOIN projet.comp_connexe USING (id_comp_connexe)"
                     "JOIN projet.asso_zone_comp_co USING (id_comp_connexe)"
                     "JOIN projet.zone_geo USING (id_zone) "
@@ -109,7 +109,8 @@ class ZonageDao(metaclass=Singleton):
 
             points_perim_dict = {}
             for point in lst_pts_perim:
-                # point[1] est la clé, et on stocke toutes les valeurs associées dans une liste
+                # point[1] est la clé, et on stocke toutes les valeurs
+                # associées dans une liste
                 if point[1] not in points_perim_dict:
                     points_perim_dict[point[1]] = []
                 points_perim_dict[point[1]].append(point[0])
@@ -117,14 +118,16 @@ class ZonageDao(metaclass=Singleton):
             # Construire lst_poly_perim
             lst_poly_perim = []
             for i in lst_poly_perim_id:
-                # Récupérer les points correspondant directement depuis le dictionnaire
+                # Récupérer les points correspondant directement
+                # depuis le dictionnaire
                 temp_lst = points_perim_dict.get(i, [])
                 if temp_lst:
                     lst_poly_perim.append(temp_lst)
 
             points_creux_dict = {}
             for point in lst_pts_creux:
-                # point[1] est la clé, et on stocke toutes les valeurs associées dans une liste
+                # point[1] est la clé, et on stocke toutes les valeurs
+                # associées dans une liste
                 if point[1] not in points_creux_dict:
                     points_creux_dict[point[1]] = []
                 points_creux_dict[point[1]].append(point[0])
@@ -132,7 +135,8 @@ class ZonageDao(metaclass=Singleton):
             # Construire lst_poly_perim
             lst_poly_creux = []
             for i in lst_poly_creux_id:
-                # Récupérer les points correspondant directement depuis le dictionnaire
+                # Récupérer les points correspondant directement
+                # depuis le dictionnaire
                 temp_lst = points_creux_dict.get(i, [])
                 if temp_lst:
                     lst_poly_creux.append(temp_lst)
