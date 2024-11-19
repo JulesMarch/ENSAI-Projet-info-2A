@@ -25,12 +25,11 @@ with fiona.open(
         # Dictionnaire contenant les délimitations de la région
         geometry = region['geometry']
 
-        if geometry["type"] == "MultiPolygon":
-            # Remplissage des informations liées à la région
-            RegionDao.add_region(properties)
+        # Remplissage des informations liées à la région
+        RegionDao.add_region(properties)
 
-            # Remplissage des contours geographiques de la région
-            ComposanteConnexeDao.add_composante_connexe(
-                geometry["coordinates"],
-                geometry["type"]
-            )
+        # Remplissage des contours geographiques de la région
+        ComposanteConnexeDao.add_composante_connexe(
+            geometry["coordinates"],
+            geometry["type"]
+        )

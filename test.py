@@ -14,40 +14,42 @@ with fiona.open(
         properties = region["properties"]
         geometry = region["geometry"]
 
-        type_comp = geometry["type"]
+        print(properties)
 
-        if type_comp == 'Polygon':
+#         type_comp = geometry["type"]
 
-            polygon = geometry["coordinates"][0]
+#         if type_comp == 'Polygon':
 
-            # print(len(polygon))
+#             polygon = geometry["coordinates"][0]
 
-        elif type_comp == 'MultiPolygon':
+#             # print(len(polygon))
 
-            print(geometry)
+#         elif type_comp == 'MultiPolygon':
 
-            list_polygon = geometry["coordinates"]
+#             print(geometry)
 
-            print(len(list_polygon), type(list_polygon))
+#             list_polygon = geometry["coordinates"]
 
-            polygon = list_polygon[0]
+#             print(len(list_polygon), type(list_polygon))
 
-            print(len(polygon), type(polygon))
+#             polygon = list_polygon[0]
 
-            list_point = list_polygon[0][0]
+#             print(len(polygon), type(polygon))
 
-            print(len(list_point), type(list_point))
+#             list_point = list_polygon[0][0]
 
-            point = list_polygon[0][0][0]
+#             print(len(list_point), type(list_point))
 
-            print(len(point), type(point))
+#             point = list_polygon[0][0][0]
 
-L = [
-        [
-            [(6, 12), (5, 8), (9, 15)]
-        ],
-        [
-            [(1, 2), (3, 4), (5, 6)], [(0, 3), (10, 12), (11, 14)]
-        ]
-]
-ComposanteConnexeDao.add_composante_connexe(L, "MultiPolygon")
+#             print(len(point), type(point))
+
+# L = [
+#         [
+#             [(6, 12), (5, 8), (9, 15)]
+#         ],
+#         [
+#             [(1, 2), (3, 4), (5, 6)], [(0, 3), (10, 12), (11, 14)]
+#         ]
+# ]
+# ComposanteConnexeDao.add_composante_connexe(L, "MultiPolygon")
