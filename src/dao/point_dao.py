@@ -8,8 +8,10 @@ from src.business_object.point import Point
 class PointDao(metaclass=Singleton):
     def add_point(point: tuple):
         """
-        Add a point to the database
-            (works only if the point is not already in the database)
+        Ajoute un point à la base de données si celui-ci n'y est pas déjà
+
+        Args:
+            point (tuple): Coordonnées du point sous la forme (x, y)
         """
         print("Ajout point :)")
         if not PointDao.est_dans(point):
@@ -29,7 +31,13 @@ class PointDao(metaclass=Singleton):
 
     def est_dans(point: tuple) -> bool:
         """
-        Tell if a point is in the database
+        Vérifie si un point existe déjà dans la base de données
+
+        Args:
+            point (tuple): Coordonnées du point sous la forme (x, y)
+
+        Returns:
+            bool: True si le point est dans la base de données, False sinon
         """
 
         with DBConnection().connection as connection:
@@ -51,7 +59,16 @@ class PointDao(metaclass=Singleton):
         return False
 
     def get_point(self, id: int) -> Point:
+        """
+        Récupère un point de la base de données à partir de son identifiant
 
+        Args:
+            id (int): Identifiant unique du point dans la base de données
+
+        Returns:
+            Point: Objet représentant le point avec ses coordonnées (x, y), 
+            None si le point n'existe pas
+        """
         point = None
 
         with DBConnection().connection as connection:
@@ -74,6 +91,16 @@ class PointDao(metaclass=Singleton):
         return point
 
     def get_id_point(point: tuple) -> int:
+        """
+        Récupère l'identifiant d'un point dans la base de données à partir de ses coordonnées
+
+        Args:
+            point (tuple): Coordonnées du point sous la forme (x, y)
+
+        Returns:
+            int: Identifiant unique du point dans la base de données, 
+            None si le point n'existe pas
+        """
 
         id = None
 
