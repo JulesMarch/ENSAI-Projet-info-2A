@@ -7,8 +7,11 @@ from src.dao.zonage_dao import ZonageDao
 class RegionDao(metaclass=Singleton):
     def add_region(zone: dict):
         """
-        Add a Region to the database
-            (works only if the region is not already in the database)
+        Ajoute une région à la base de données
+
+        Args:
+            zone (dict): Dictionnaire contenant les informations de la région 
+            avec les clés "NOM" (nom de la région), "INSEE_REG" (code INSEE de la région)
         """
 
         # if not ZonageDao.est_dans(zone):
@@ -30,7 +33,13 @@ class RegionDao(metaclass=Singleton):
 
     def find_by_code_insee(code_insee: str):
         """
-        Find a zonage in the database using the name and the geographic level
+        Trouve un zonage dans la base de données à partir de son code INSEE
+
+        Args:
+            code_insee (str): Code INSEE de la zone géographique
+
+        Returns:
+            dict: Informations sur le zonage, incluant son nom, niveau et code INSEE
         """
 
         with DBConnection().connection as connection:
@@ -61,6 +70,13 @@ class RegionDao(metaclass=Singleton):
             )
 
     def get_all_regions():
+        """
+        Récupère toutes les régions de la base de données
+
+        Returns:
+            list: Liste des régions, chaque élément contenant 
+            les informations de la région
+        """
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -71,6 +87,16 @@ class RegionDao(metaclass=Singleton):
                 return res
 
     def construction_region(reg):
+        """
+        Construit un objet Région à partir des données fournies
+
+        Args:
+            reg (dict): Dictionnaire contenant les informations de la région, 
+
+        Returns:
+            Region: Objet représentant la région avec ses attributs 
+            (nom, numéro, périmètre, etc.)
+        """
         zone = ZonageDao.construction_zonage(reg)
         curr_reg = Region(
             nom=zone.nom,
