@@ -99,6 +99,19 @@ class CommuneDao(metaclass=Singleton):
                 return res
 
     def construction_commune(com):
+        """
+        Construit une instance de la classe Commune à partir 
+        d'un dictionnaire de données géographiques
+
+        Args:
+            com (dict): Un dictionnaire contenant les informations de la commune 
+        et incluant le code INSEE
+
+         Returns:
+            Commune: Une instance de la classe Commune initialisée avec les 
+            données fournies
+
+        """
         zone = ZonageDao.construction_zonage(com)
         curr_com = Commune(
             nom=zone.nom,
@@ -110,7 +123,15 @@ class CommuneDao(metaclass=Singleton):
         return curr_com
 
     def find_by_nom(nom: str):
+        """
+        Recherche une zone géographique par son nom
 
+        Args:
+            nom (str): Nom de la zone recherchée
+
+        Returns:
+            dict: Informations sur la zone, y compris le département et la région
+        """
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
