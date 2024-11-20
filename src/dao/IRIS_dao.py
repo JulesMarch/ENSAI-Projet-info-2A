@@ -3,6 +3,16 @@ from src.dao.zonage_dao import ZonageDao
 
 
 class IrisDao(ZonageDao):
+        """
+        Récupère les informations d'une zone IRIS à partir de son code
+
+        Args:
+            niveau (str): Niveau géographique de la zone
+            code (int): Code INSEE de la zone IRIS
+
+        Returns:
+            str: Description de la zone IRIS avec son nom et sa localisation
+        """
     def find_by_code(self, niveau: str, code: int):
         request = (
             f"SELECT code_insee, nom, zone_superieur"
