@@ -16,7 +16,7 @@ class ZonageDao(metaclass=Singleton):
         si elle n'est pas déjà présente
 
         Args:
-            zone (dict): Dictionnaire contenant les informations de la zone, 
+            zone (dict): Dictionnaire contenant les informations de la zone,
             telles que le nom, le niveau et le code.
         """
 
@@ -84,7 +84,8 @@ class ZonageDao(metaclass=Singleton):
             le champ 'code_insee' pour l'identification
 
         Returns:
-            Zonage: Objet représentant la zone avec ses contours (périmètre et creux)
+            Zonage: Objet représentant la zone avec ses contours (périmètre
+            et creux)
         """
 
         with DBConnection().connection as connection:

@@ -6,7 +6,7 @@ from src.dao.departement_dao import DepartementDao
 from src.dao.commune_dao import CommuneDao
 from src.dao.arrondissement_dao import ArrondissementDao
 
-niveaux_possibles = ["Commune", "Département", "Région"]
+niveaux_possibles = ["Commune", "Département", "Région", "Arrondissement"]
 
 
 def find_by_coord(longitude: float, latitude: float, niveau: str):
@@ -131,7 +131,8 @@ def find_commune(x: float, y: float):
 
 def find_arrondissement(x: float, y: float):
     """
-    Recherche un arrondissement en fonction des coordonnées géographiques (x, y)
+    Recherche un arrondissement en fonction des coordonnées géographiques
+     (x, y)
 
     Args:
         x (float): La longitude du point à vérifier
@@ -149,14 +150,14 @@ def find_arrondissement(x: float, y: float):
 
     com = find_commune(x, y)[0]
 
-    lst_arr = CommuneDao.get_all_com_in(com.code_postal)
+    lst_arr = ArrondissementDao.get_all_arr_in(com.code_postal)
     for arr in lst_arr:
         curr_arr = ArrondissementDao.construction_arrondissement(arr)
         if curr_arr.appartient_zonage(pt_depart):
             return (curr_arr, com)
     raise ValueError("Ce point n'est pas situé en France")
 
-# testTE = find_arrondissement(2.2945006, 48.8582599).nom
+# testTE = find_arrondissement(2.2945006, 48.8582599)[0].nom
 # print("Tour eiffel :", testTE)
 
 # testDunk = find_region(2.3772525, 51.0347708).nom
