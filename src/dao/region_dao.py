@@ -5,7 +5,7 @@ from src.dao.zonage_dao import ZonageDao
 
 
 class RegionDao(metaclass=Singleton):
-    def add_region(zone: dict):
+    def add_region(zone: dict, annee):
         """
         Ajoute une région à la base de données
 
@@ -15,20 +15,20 @@ class RegionDao(metaclass=Singleton):
               de la région)
         """
 
-        # if not ZonageDao.est_dans(zone):
-
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "insert into projet.zone_geo (nom, niveau,          "
-                    " code_insee, niveau_superieur) VALUES              "
-                    " (%(nom)s, %(niveau)s,                             "
-                    " %(code_insee)s, %(niveau_superieur)s)             ",
+                    "insert into projet.zone_geo (nom, nom_majuscule,   "
+                    "niveau, code_insee, niveau_superieur, annee) VALUES"
+                    " (%(nom)s, %(nom_majuscule)s, %(niveau)s,          "
+                    " %(code_insee)s, %(niveau_superieur)s, %(annee)s)  ",
                     {
                         "nom": zone["NOM"],
+                        "nom_majuscule": zone["NOM_M"],
                         "niveau": "Région",
                         "code_insee": zone["INSEE_REG"],
-                        "niveau_superieur": "Null"
+                        "niveau_superieur": "Null",
+                        "annee": annee
                     },
                 )
 
