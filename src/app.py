@@ -8,7 +8,7 @@ from src.services.fonction_1 import find_by_code_insee, find_by_nom
 from src.services.fonction_2 import find_by_coord
 
 
-test = find_by_code_insee("11", "Région")
+test = find_by_code_insee("11", "Région", 2023)
 print(test)
 
 
@@ -36,18 +36,18 @@ async def global_exception_handler(request, exc):
     )
 
 
-@app.get("/zonageparcode/{niveau}/2024/{code_insee}")
-async def get_zone_par_code_insee(niveau, code_insee):
+@app.get("/zonageparcode/{niveau}/{annee}/{code_insee}")
+async def get_zone_par_code_insee(niveau, code_insee, annee: int):
 
     print(niveau, code_insee)
-    answer = find_by_code_insee(str(code_insee), niveau)
+    answer = find_by_code_insee(str(code_insee), niveau, annee)
     return answer
 
 
-@app.get("/zonageparnom/{niveau}/2024/{nom}")
-async def get_zone_par_nom(niveau, nom):
+@app.get("/zonageparnom/{niveau}/{annee}/{nom}")
+async def get_zone_par_nom(niveau, nom, annee: int):
     print(niveau, nom)
-    answer = find_by_nom(str(nom), niveau)
+    answer = find_by_nom(str(nom), niveau, annee)
     return answer
 
 

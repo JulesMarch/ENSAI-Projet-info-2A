@@ -26,10 +26,10 @@ with fiona.open(
         geometry = commune['geometry']
 
         # Remplissage des informations liées à la commune
-        CommuneDao.add_commune(properties)
+        CommuneDao.add_commune(properties, 2023)
 
         # Remplissage des contours geographiques du département
-        ComposanteConnexeDao.add_composante_connexe(
-            geometry["coordinates"],
-            geometry["type"]
-        )
+        # ComposanteConnexeDao.add_composante_connexe(
+        #     geometry["coordinates"],
+        #     geometry["type"]
+        # )
