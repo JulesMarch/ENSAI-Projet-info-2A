@@ -6,6 +6,7 @@ psycopg2-binary
 pytest
 python-dotenv
 requests
+pyproj
 tabulate
 uvicorn
 passlib

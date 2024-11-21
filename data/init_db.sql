@@ -11,9 +11,11 @@ DROP TABLE IF EXISTS projet.zone_geo CASCADE;
 CREATE TABLE projet.zone_geo (
     id_zone serial PRIMARY KEY,
     nom text,
+    nom_majuscule text,
     niveau text,
     code_insee text,
-    niveau_superieur text
+    niveau_superieur text,
+    annee int
 );
 
 
