@@ -75,7 +75,7 @@ class CommuneDao(metaclass=Singleton):
 
             return resultat_final
 
-    def get_all_com_in(id_dep): 
+    def get_all_com_in(id_dep):
         """
         Récupère toutes les communes d'un département spécifique
 
@@ -85,8 +85,8 @@ class CommuneDao(metaclass=Singleton):
         Retour:
         list: Une liste de toutes les communes du département,
         """
-        
-    with DBConnection().connection as connection:
+
+        with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "select * from projet.zone_geo                      "
@@ -100,15 +100,15 @@ class CommuneDao(metaclass=Singleton):
 
     def construction_commune(com):
         """
-        Construit une instance de la classe Commune à partir 
+        Construit une instance de la classe Commune à partir
         d'un dictionnaire de données géographiques
 
         Args:
-            com (dict): Un dictionnaire contenant les informations de la commune 
+            com (dict): Un dictionnaire contenant les informations de la commune
         et incluant le code INSEE
 
          Returns:
-            Commune: Une instance de la classe Commune initialisée avec les 
+            Commune: Une instance de la classe Commune initialisée avec les
             données fournies
 
         """
