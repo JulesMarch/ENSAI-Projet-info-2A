@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import font, messagebox, ttk
 from PIL import Image, ImageTk
 import os
+from src.dao.zonage_dao import ZonageDao
 
 # Authentification
 class AuthWindow:
@@ -211,7 +212,7 @@ class SecondWindow:
         # Récupérer les textes des deux zones de texte et les afficher dans le label
         texte_1 = self.text_entry_1.get()
         option_selectionnee = self.combo_box.get()
-        self.label_resultat.config(text=f"Texte : {texte_1}\nOption sélectionnée : {option_selectionnee}")
+        self.label_resultat.config(text=f"{ZonageDao.find_by_code_insee(texte_1, option_selectionnee)}")
 
     def return_to_main_window(self):
         self.window.destroy()

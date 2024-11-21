@@ -75,7 +75,16 @@ class DepartementDao(metaclass=Singleton):
             )
 
     def find_by_nom(nom: str):
+       """
+        Recherche une zone géographique dans la base de données par son nom
 
+        Args:
+            nom (str): Nom de la zone à rechercher
+
+        Returns:
+         dict: Dictionnaire contenant les informations de la zone,
+              incluant le nom, le niveau, le code INSEE, et la région
+        """
         resultat_final = None
 
         with DBConnection().connection as connection:
@@ -104,6 +113,17 @@ class DepartementDao(metaclass=Singleton):
             return resultat_final
 
     def construction_departement(dep):
+        """
+        Construit un objet département à partir des données fournies
+
+        Args:
+            dep (dict): Dictionnaire contenant les informations 
+            du département
+
+        Returns:
+            Departement: Objet représentant le département avec ses 
+            attributs (nom, numéro, périmètre, creux, édition de carte)
+        """
         zone = ZonageDao.construction_zonage(dep)
         curr_dep = Departement(
             nom=zone.nom,
@@ -115,6 +135,16 @@ class DepartementDao(metaclass=Singleton):
         return curr_dep
 
     def get_all_dep_in(id_reg):
+        """
+        Récupère tous les départements appartenant à une région donnée
+
+        Args:
+            id_reg (int): Identifiant de la région (code INSEE)
+
+        Returns:
+            list[dict]: Liste des départements sous forme de 
+            dictionnaires contenant leurs attributs
+        """
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(

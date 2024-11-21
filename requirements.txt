@@ -8,3 +8,7 @@ python-dotenv
 requests
 tabulate
 uvicorn
+passlib
+bcrypt
+sqlalchemy
+python-jose

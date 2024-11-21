@@ -12,8 +12,12 @@ niveaux = ["Région", "Département", "Commune", "Arrondissement", "IRIS"]
 class ZonageDao(metaclass=Singleton):
     def add_zone_geo(zone: dict):
         """
-        Add a geographical zone to the database
-            (works only if the zone is not already in the database)
+        Ajoute une zone géographique à la base de données 
+        si elle n'est pas déjà présente
+
+        Args:
+            zone (dict): Dictionnaire contenant les informations de la zone, 
+            telles que le nom, le niveau et le code.
         """
 
         # if not ZonageDao.est_dans(zone):
@@ -43,7 +47,15 @@ class ZonageDao(metaclass=Singleton):
 
     def est_dans(zone: dict) -> bool:
         """
-        Tell if a geographical zone is in the database
+        Vérifie si une zone géographique est présente dans la base de données
+
+        Args:
+            zone (dict): Dictionnaire contenant les informations de la zone, 
+            telles que le nom, le niveau, et le code INSEE
+
+        Returns:
+            bool: Retourne True si la zone est dans la base de données, 
+            False sinon
         """
 
         with DBConnection().connection as connection:
@@ -64,6 +76,17 @@ class ZonageDao(metaclass=Singleton):
         return False
 
     def construction_zonage(zone):
+        """
+        Construit un objet Zonage à partir des données d'une zone géographique
+    
+        Args:
+            zone (dict): Informations sur la zone géographique, avec au minimum
+            le champ 'code_insee' pour l'identification
+                     
+        Returns:
+            Zonage: Objet représentant la zone avec ses contours (périmètre et creux)
+        """
+        
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(

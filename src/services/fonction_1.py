@@ -8,7 +8,19 @@ niveaux_possibles = ["Commune", "Département", "Région"]
 
 def find_by_code_insee(code_insee: str, niveau: str):
     """
-    Find a zonage in the database using the code and the geographic level
+    Recherche un zonage dans la base de données à partir du code INSEE 
+    et du niveau géographique.
+
+    Args :
+        code_insee (str) : Le code INSEE (pour la commune, le département ou la région)
+        niveau (str) : Le niveau géographique ("Région", "Département", ou "Commune")
+
+    Returns :
+        Objet : Un objet correspondant à la région, au département 
+        ou à la commune trouvée dans la base de données
+    
+    Raise :
+        ValueError : Si le niveau n'est pas valide  
     """
 
     if niveau not in niveaux_possibles:
@@ -28,7 +40,19 @@ def find_by_code_insee(code_insee: str, niveau: str):
 
 def find_by_nom(nom: str, niveau: str):
     """
-    Find a zonage in the database using the name and the geographic level
+    Recherche un zonage par nom et niveau dans la base de données
+
+    Args:
+        nom (str): Le nom de la zone géographique à rechercher
+        niveau (str): Le niveau géographique de la zone
+
+    Returns:
+        dict: Un dictionnaire contenant les informations de la zone, 
+        avec les clés "nom", "niveau", "code_insee", et "niveau_superieur"
+
+    Raise:
+        ValueError: Si le niveau fourni n'est pas valide ou si aucun zonage n'est trouvé 
+        pour le nom et le niveau spécifiés
     """
 
     if niveau not in niveaux_possibles:

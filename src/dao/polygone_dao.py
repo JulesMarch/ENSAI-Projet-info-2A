@@ -8,8 +8,10 @@ from src.dao.point_dao import PointDao
 class PolygoneDao(metaclass=Singleton):
     def add_polygone(L: list):
         """
-        Add a polygone to the database
-            (works only if the point is not already in the database)
+        Ajoute un polygone à la base de données en associant ses points
+
+        Args:
+            L (list): Liste des points du polygone, chaque point étant un tuple (x, y).
         """
 
         with DBConnection().connection as connection:
