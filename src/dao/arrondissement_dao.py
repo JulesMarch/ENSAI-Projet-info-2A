@@ -50,14 +50,14 @@ class ArrondissementDao(metaclass=Singleton):
 
         """
         zone = ZonageDao.construction_zonage(arr)
-        curr_com = Arrondissement(
+        curr_arr = Arrondissement(
             nom=zone.nom,
-            code_postal=arr["code_insee"],
+            num_arr=arr["code_insee"],
             perimetre=zone.perimetre,
             creux=zone.creux,
             edition_carte=zone.edition_carte
         )
-        return curr_com
+        return curr_arr
 
     def get_all_arr_in(id_com):
         """
@@ -74,7 +74,7 @@ class ArrondissementDao(metaclass=Singleton):
             with connection.cursor() as cursor:
                 cursor.execute(
                     "select * from projet.zone_geo                      "
-                    " where niveau= 'Arrondissement' AND"
+                    " where niveau= 'Arrondissement' AND    "
                     "niveau_superieur = %(id)s",
                     {
                         "id": id_com
