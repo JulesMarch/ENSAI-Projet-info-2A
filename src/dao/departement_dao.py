@@ -10,9 +10,9 @@ class DepartementDao(metaclass=Singleton):
     def add_departement(zone: dict):
         """
         Ajoute une zone géographique à la base de donnée
-        
+
         Args:
-            zone (dict): Dictionnaire contenant les informations sur 
+            zone (dict): Dictionnaire contenant les informations sur
             la zone avec les clés "NOM", "INSEE_DEP", et "INSEE_REG"
         """
 
@@ -42,7 +42,7 @@ class DepartementDao(metaclass=Singleton):
 
         Returns:
             dict: Dictionnaire contenant les informations de la zone,
-              incluant le nom, le niveau, le code INSEE, et la région. 
+              incluant le nom, le niveau, le code INSEE, et la région.
         """
 
         with DBConnection().connection as connection:
