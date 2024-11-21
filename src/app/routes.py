@@ -1,42 +1,51 @@
-from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy.orm import Session
-from .database import User, SessionLocal
-from .models import UserCreate, UserLogin
-from .utils import hash_password, verify_password
-from jose import JWTError, jwt
-from datetime import datetime, timedelta
-from .database import get_db
-from ..dao.zonage_dao import ZonageDao
-
+from fastapi import APIRouter, Query
+from typing import List, Tuple
+from app.auth import signup, login  # Authentification
+from src.services.fonction_1 import find_by_code_insee, find_by_nom
+from src.services.fonction_2 import find_by_coord
+from app.utils import Conversion
 
 
 router = APIRouter()
 
-# Créer un compte utilisateur
-@router.post("/signup")
-def signup(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.username == user.username).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Nom d'utilisateur déjà pris")
-    
-    hashed_password = hash_password(user.password)
-    new_user = User(username=user.username, hashed_password=hashed_password)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"message": "Utilisateur créé avec succès"}
+@router.get("/")
+async def root():
+    return {"message": "Bienvenue sur notre API"}
 
-# Connexion et génération de JWT
+@router.post("/signup")
+async def user_signup(username: str, password: str):
+    return signup(username, password)
+
 @router.post("/login")
-def login(user: UserLogin, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.username == user.username).first()
-    if not db_user or not verify_password(user.password, db_user.hashed_password):
-        raise HTTPException(status_code=401, detail="Identifiants incorrects")
-    
-    # Générer un token JWT
-    access_token = jwt.encode(
-        {"sub": db_user.username, "exp": datetime.utcnow() + timedelta(hours=1)},
-        "your_secret_key",
-        algorithm="HS256"
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+async def user_login(username: str, password: str):
+    return login(username, password)
+
+@router.get("/zonageparcode/{niveau}/2024/{code_insee}")
+async def get_zone_par_code_insee(niveau, code_insee):
+    return find_by_code_insee(str(code_insee), niveau)
+
+@router.get("/zonageparnom/{niveau}/2024/{nom}")
+async def get_zone_par_nom(niveau, nom):
+    return find_by_nom(str(nom), niveau)
+
+@router.get("/coordonees/{niveau}")
+async def find_coord(
+    niveau: str,
+    lat: float = Query(..., description="Latitude du point"),
+    long: float = Query(..., description="Longitude du point"),
+    type_coord: str = "GPS",
+):
+    if type_coord == "Lambert":
+        long, lat = Conversion.lambert93_into_gps(long, lat)
+    return find_by_coord(long, lat, niveau)
+
+@router.post("/listepoints/")
+async def find_points_loc(points: List[Tuple[float, float, str]]):
+    results = {}
+    for i, point in enumerate(points):
+        long, lat, niveau = point
+        result = find_by_coord(long, lat, niveau)
+        results[f"Point {i+1}"] = result
+    return results
+
+

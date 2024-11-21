@@ -1,7 +1,26 @@
 from fastapi import FastAPI
-from app import routes  # Importez ici vos routes (routes.py)
+from fastapi.responses import JSONResponse
+from app.routes import router  # Routes de l'application
+import uvicorn
 
+# Créer l'application
 app = FastAPI()
 
-# Inclure les routes définies dans routes.py
-app.include_router(routes.router)  # On suppose que vous avez un router dans routes.py
+# Gestionnaire d'exceptions global
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Une erreur s'est produite",
+            "detail": str(exc),
+        },
+    )
+
+# Ajouter les routes à l'application
+app.include_router(router)
+
+# Lancement du serveur
+if __name__ == "__main__":
+    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
+

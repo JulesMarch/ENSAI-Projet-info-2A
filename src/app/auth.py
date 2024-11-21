@@ -1,21 +1,24 @@
-from jose import JWTError, jwt
-from fastapi import Depends, HTTPException
-from database import get_db, User
+from fastapi import HTTPException
+from app.database import User, get_db
 from sqlalchemy.orm import Session
+from app.utils import hash_password, verify_password
 
-SECRET_KEY = "your_secret_key"
-ALGORITHM = "HS256"
+def signup(username: str, password: str):
+    db: Session = next(get_db())
+    user = db.query(User).filter(User.username == username).first()
+    if user:
+        raise HTTPException(status_code=400, detail="Utilisateur déjà existant")
+    hashed_pw = hash_password(password)
+    new_user = User(username=username, hashed_password=hashed_pw)
+    db.add(new_user)
+    db.commit()
+    return {"message": "Compte créé avec succès"}
 
-def get_current_user(token: str, db: Session = Depends(get_db)):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("sub")
-        if username is None:
-            raise HTTPException(status_code=401, detail="Token invalide")
-        
-        user = db.query(User).filter(User.username == username).first()
-        if user is None:
-            raise HTTPException(status_code=401, detail="Utilisateur non trouvé")
-        return user
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Token invalide")
+def login(username: str, password: str):
+    db: Session = next(get_db())
+    user = db.query(User).filter(User.username == username).first()
+    if not user or not verify_password(password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Identifiants invalides")
+    # Générer un token ici
+    return {"message": "Connexion réussie"}
+
