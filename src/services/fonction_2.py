@@ -4,6 +4,7 @@ from src.business_object.point import Point
 from src.dao.region_dao import RegionDao
 from src.dao.departement_dao import DepartementDao
 from src.dao.commune_dao import CommuneDao
+from src.dao.arrondissement_dao import ArrondissementDao
 
 niveaux_possibles = ["Commune", "Département", "Région"]
 
@@ -37,6 +38,9 @@ def find_by_coord(longitude: float, latitude: float, niveau: str):
 
     elif niveau == "Commune":
         return find_commune(longitude, latitude)
+
+    elif niveau == "Arrondissement":
+        return find_arrondissement(longitude, latitude)
 
 
 def find_region(x: float, y: float):
@@ -100,7 +104,6 @@ def find_departement(x: float, y: float):
 def find_commune(x: float, y: float):
     """
     Recherche une commune en fonction des coordonnées géographiques (x, y)
-     et du département
 
     Args:
         x (float): La longitude du point à vérifier
@@ -126,8 +129,35 @@ def find_commune(x: float, y: float):
     raise ValueError("Ce point n'est pas situé en France")
 
 
-# testTE = find_region(2.2945006, 48.8582599).nom
-# print("Tour eiffel :", testTE)
+def find_arrondissement(x: float, y: float):
+    """
+    Recherche un arrondissement en fonction des coordonnées géographiques (x, y)
+
+    Args:
+        x (float): La longitude du point à vérifier
+        y (float): La latitude du point à vérifier
+
+    Returns:
+        tuple: Tuple contenant les objets Arrondissement et Commune
+        correspondants si le point appartient à un arrondissement
+
+    Raise:
+        ValueError: Si le point n'est pas situé en France ou n'appartient
+         à aucun arrondissement
+    """
+    pt_depart = Point(x=x, y=y)
+
+    com = find_commune(x, y)[0]
+
+    lst_arr = CommuneDao.get_all_com_in(com.code_postal)
+    for arr in lst_arr:
+        curr_arr = ArrondissementDao.construction_arrondissement(arr)
+        if curr_arr.appartient_zonage(pt_depart):
+            return (curr_arr, com)
+    raise ValueError("Ce point n'est pas situé en France")
+
+testTE = find_arrondissement(2.2945006, 48.8582599).nom
+print("Tour eiffel :", testTE)
 
 # testDunk = find_region(2.3772525, 51.0347708).nom
 # print("Dunkerque :", testDunk)
