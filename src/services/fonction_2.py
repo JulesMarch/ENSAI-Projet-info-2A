@@ -156,8 +156,8 @@ def find_arrondissement(x: float, y: float):
             return (curr_arr, com)
     raise ValueError("Ce point n'est pas situé en France")
 
-testTE = find_arrondissement(2.2945006, 48.8582599).nom
-print("Tour eiffel :", testTE)
+# testTE = find_arrondissement(2.2945006, 48.8582599).nom
+# print("Tour eiffel :", testTE)
 
 # testDunk = find_region(2.3772525, 51.0347708).nom
 # print("Dunkerque :", testDunk)

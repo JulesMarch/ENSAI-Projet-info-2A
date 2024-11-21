@@ -59,22 +59,21 @@ class RegionDao(metaclass=Singleton):
                 )
                 res = cursor.fetchone()
 
-        resultat_final = None
-
-        if res:
-
-            resultat_final = {
-                "nom": res["nom"],
-                "niveau": res["niveau"],
-                "code_insee": res["code_insee"],
-                "annee": annee
-            }
-
-            return resultat_final
-
-        raise ValueError(
+        if res is None:
+            raise ValueError(
                 "Le code donné n'est associé à aucune Région."
             )
+
+        resultat_final = None
+
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "annee": annee
+        }
+
+        return resultat_final
 
     def find_by_nom(nom: str, annee: int):
         """
@@ -109,22 +108,21 @@ class RegionDao(metaclass=Singleton):
                 )
                 res = cursor.fetchone()
 
-        resultat_final = None
-
-        if res:
-
-            resultat_final = {
-                "nom": res["nom"],
-                "niveau": res["niveau"],
-                "code_insee": res["code_insee"],
-                "annee": annee
-            }
-
-            return resultat_final
-
-        raise ValueError(
+        if res is None:
+            raise ValueError(
                 "Le nom donné n'est associé à aucune Région."
             )
+
+        resultat_final = None
+
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "annee": annee
+        }
+
+        return resultat_final
 
     def get_all_regions():
         """
@@ -165,5 +163,5 @@ class RegionDao(metaclass=Singleton):
         return curr_reg
 
 
-test = RegionDao.find_by_nom("bretagne", 2023)
-print(test)
+# test = RegionDao.find_by_code_insee("75", 2023)
+# print(test)

@@ -16,14 +16,14 @@ with fiona.open(
     'r'
 ) as shapefile:
 
-    for arrondissement in shapefile:
+    for iris in shapefile:
 
         # Dictionnaire contenant les informations de la commune
-        properties = arrondissement["properties"]
+        properties = iris["properties"]
         print(properties)
 
         # Dictionnaire contenant les délimitations de la commune
-        geometry = arrondissement['geometry']
+        geometry = iris['geometry']
 
         # Remplissage des informations liées à la commune
         ArrondissementDao.add_arrondissement(properties)

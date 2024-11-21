@@ -61,24 +61,24 @@ class DepartementDao(metaclass=Singleton):
                 )
                 res = cursor.fetchone()
 
-        resultat_final = None
-
-        if res:
-
-            resultat_final = {
-                "nom": res["nom"],
-                "niveau": res["niveau"],
-                "code_insee": res["code_insee"],
-                "Région": RegionDao.find_by_code_insee(
-                    res["niveau_superieur"])["nom"],
-                "annee": annee
-            }
-
-            return resultat_final
-
-        raise ValueError(
+        if res is None:
+            raise ValueError(
                 "Le code donné n'est associé à aucun Département."
             )
+
+        region = RegionDao.find_by_code_insee(
+            res["niveau_superieur"], annee
+        )["nom"]
+
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "Région": region,
+            "annee": annee
+        }
+
+        return resultat_final
 
     def find_by_nom(nom: str, annee: int):
         """
@@ -114,19 +114,23 @@ class DepartementDao(metaclass=Singleton):
                 )
                 res = cursor.fetchone()
 
-        resultat_final = None
+        if res is None:
+            raise ValueError(
+                "Le nom donné n'est associé à aucun Département."
+            )
 
-        if res:
+        region = RegionDao.find_by_code_insee(
+            res["niveau_superieur"], annee
+        )["nom"]
 
-            resultat_final = {
-                "nom": res["nom"],
-                "niveau": res["niveau"],
-                "code_insee": res["code_insee"],
-                "Région": RegionDao.find_by_code_insee(
-                    res["niveau_superieur"], 2023)["nom"]
-            }
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "Région": region
+        }
 
-            return resultat_final
+        return resultat_final
 
     def construction_departement(dep):
         """
@@ -173,3 +177,7 @@ class DepartementDao(metaclass=Singleton):
                 )
                 res = cursor.fetchall()
                 return res
+
+
+# test = DepartementDao.find_by_code_insee("01", 2023)
+# print(test)

@@ -29,7 +29,7 @@ class ComposanteConnexeDao(metaclass=Singleton):
 
         if type_composante == 'Polygon':
 
-            # il n'y a du'un seul contour dans la composante dans ce cas
+            # Il n'y a du'un seul contour dans la composante dans ce cas
 
             polygon = L[0]
 
@@ -46,8 +46,8 @@ class ComposanteConnexeDao(metaclass=Singleton):
                         " (id_polygone, id_comp_connexe, ordre, creux)  "
                         "values                                         "
                         "((select max(id_polygone) from projet.polygone),"
-                        "(select max(id_comp_connexe) from              "
-                        "projet.comp_connexe), %(ordre)s, %(creux)s)    ",
+                        " (select max(id_comp_connexe) from             "
+                        " projet.comp_connexe), %(ordre)s, %(creux)s)   ",
                         {
                             'ordre': 0,
                             'creux': False
@@ -77,12 +77,12 @@ class ComposanteConnexeDao(metaclass=Singleton):
                     with DBConnection().connection as connection:
                         with connection.cursor() as cursor:
                             cursor.execute(
-                                "insert into"
-                                "projet.association_connexe_polygone"
+                                "insert into                                 "
+                                " projet.association_connexe_polygone        "
                                 " (id_polygone, id_comp_connexe, ordre, creux)"
-                                "values ((select max(id_polygone) from "
-                                "projet.polygone),"
-                                "(select max(id_comp_connexe) from           "
+                                "values ((select max(id_polygone) from       "
+                                " projet.polygone),                          "
+                                " (select max(id_comp_connexe) from          "
                                 "projet.comp_connexe), %(ordre)s, %(creux)s) ",
                                 {
                                     'ordre': k,
@@ -129,8 +129,8 @@ class ComposanteConnexeDao(metaclass=Singleton):
                         with DBConnection().connection as connection:
                             with connection.cursor() as cursor:
                                 cursor.execute(
-                                    "insert into "
-                                    "projet.association_connexe_polygone"
+                                    "insert into                            "
+                                    " projet.association_connexe_polygone   "
                                     " (id_polygone, id_comp_connexe, ordre, "
                                     "creux) values ((select max(id_polygone) "
                                     "from projet.polygone),(select "

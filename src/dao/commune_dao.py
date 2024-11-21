@@ -61,23 +61,22 @@ class CommuneDao(metaclass=Singleton):
 
         if res is None:
             raise ValueError(
-                "Le nom donné n'est associé à aucune Commune."
+                "Le code donné n'est associé à aucune Commune."
             )
 
         departement = DepartementDao.find_by_code_insee(
-            res["niveau_superieur"])
+            res["niveau_superieur"]
+        )
 
-        if res:
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "Département": departement["nom"],
+            "Région": departement["Région"]
+        }
 
-            resultat_final = {
-                "nom": res["nom"],
-                "niveau": res["niveau"],
-                "code_insee": res["code_insee"],
-                "Département": departement["nom"],
-                "Région": departement["Région"]
-            }
-
-            return resultat_final
+        return resultat_final
 
     def find_by_nom(nom: str, annee: int):
         """
@@ -180,3 +179,7 @@ class CommuneDao(metaclass=Singleton):
             edition_carte=zone.edition_carte
         )
         return curr_com
+
+
+# test = CommuneDao.find_by_nom("Bezac", 2023)
+# print(test)
