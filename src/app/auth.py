@@ -1,8 +1,7 @@
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException
-from database import SessionLocal
+from database import get_db, User
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
 
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
