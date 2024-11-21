@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
 from typing import List
 from typing import Tuple
@@ -6,10 +6,6 @@ import uvicorn
 
 from src.services.fonction_1 import find_by_code_insee, find_by_nom
 from src.services.fonction_2 import find_by_coord
-
-
-test = find_by_code_insee("11", "Région")
-print(test)
 
 
 # On instancie le webservice
@@ -36,6 +32,7 @@ async def global_exception_handler(request, exc):
     )
 
 
+# Rechercher les infos d'une zone via son code
 @app.get("/zonageparcode/{niveau}/2024/{code_insee}")
 async def get_zone_par_code_insee(niveau, code_insee):
 
@@ -44,6 +41,7 @@ async def get_zone_par_code_insee(niveau, code_insee):
     return answer
 
 
+# Rechercher les infos d'une zone via son nom
 @app.get("/zonageparnom/{niveau}/2024/{nom}")
 async def get_zone_par_nom(niveau, nom):
     print(niveau, nom)
@@ -51,11 +49,17 @@ async def get_zone_par_nom(niveau, nom):
     return answer
 
 
-@app.get("/coordonees/{niveau}/2024/{longitude}/{latitude}")
-async def find_coord(niveau: str, latitude: float, longitude: float):
-    answer = find_by_coord(float(longitude), float(latitude), niveau)
+# Rechercher les infos d'une zone grâce à des coordonnées
+@app.get("/coordonees/{niveau}")
+async def find_coord(
+    niveau: str,
+    lat: float = Query(..., description="Latitude du point"),
+    long: float = Query(..., description="Longitude du point"),
+    annee: int = Query(..., description="Année de la recherche")
+        ):
+    answer = find_by_coord(float(long), float(lat), niveau)
     resultat_final = {
-        "coordonées": (float(latitude), float(longitude)),
+        "coordonées": (float(lat), float(long)),
         "niveau": niveau,
     }
     if niveau == "Région":
@@ -75,6 +79,7 @@ async def find_coord(niveau: str, latitude: float, longitude: float):
     return resultat_final
 
 
+# Rechercher les infos de plusieurs zones grâce à plusieurs coordonnées
 @app.post("/listepoints/")
 async def find_points_loc(points: List[Tuple[float, float, str]]):
     dic_retour = {}
