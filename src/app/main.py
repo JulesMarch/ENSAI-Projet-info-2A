@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from app.routes import router  # Routes de l'application
+from src.app.routes import router  # Routes de l'application
 import uvicorn
 
 # Créer l'application
 app = FastAPI()
+
 
 # Gestionnaire d'exceptions global
 @app.exception_handler(Exception)
@@ -22,5 +23,4 @@ app.include_router(router)
 
 # Lancement du serveur
 if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
-
+    uvicorn.run("src.app.main:app", host="localhost", port=8000, reload=True)

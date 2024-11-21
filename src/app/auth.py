@@ -1,7 +1,7 @@
 from fastapi import HTTPException
-from app.database import User, get_db
+from src.app.database import User, get_db
 from sqlalchemy.orm import Session
-from app.utils import hash_password, verify_password
+from src.app.utils import hash_password, verify_password
 
 def signup(username: str, password: str):
     db: Session = next(get_db())
@@ -21,4 +21,3 @@ def login(username: str, password: str):
         raise HTTPException(status_code=401, detail="Identifiants invalides")
     # Générer un token ici
     return {"message": "Connexion réussie"}
-

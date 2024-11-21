@@ -19,6 +19,3 @@ class Conversion:
         )
 
         return longitude, latitude
-
-
-

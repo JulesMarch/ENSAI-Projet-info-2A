@@ -4,7 +4,7 @@ Groupe 7
 France is divided in several zones : regions, departments, cities... In some cases it can be hard to know what exactly you're talking about.
 Thus the goal of this project is to have an API that would help you to find more information about the place you're looking for.
 
-To start the API, it's very easy : just run the file "app.py", at the root of the system, then go to http://localhost:8000
+To start the API, it's very easy : just run the file "src/app/main.py", then go to http://localhost:8000
 From here, you can manually complete the URL, but I'd advise you to go to http://localhost:8000/docs in order to do the researches more easily.
 
 From now on, you can follow several paths :
