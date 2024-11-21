@@ -10,7 +10,7 @@ From here, you can manually complete the URL, but I'd advise you to go to http:/
 From now on, you can follow several paths :
 
 - If you want to find informations from a INSEE code, go to /zonageparcode/{niveau}/{annee}/{code_insee}. niveau should be one of the following :
- "Région", "Département", "Commune" or "Arrondissement", annee should be the year you're looking for, and code_insee the code that you're looking for.
+ "Région", "Département", "Commune", "Arrondissement" or "IRIS", annee should be the year you're looking for, and code_insee the code that you're looking for.
  For instance, you can try http://localhost:8000/zonageparcode/Département/2023/35 or http://localhost:8000/zonageparcode/Commune/2023/33009
 
 - If you want to do the same thing, but by starting from the name of the place, go to /zonageparnom/{niveau}/{annee}/{nom}. nom should be the name of the place you're looking for,

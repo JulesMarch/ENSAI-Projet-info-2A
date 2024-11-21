@@ -1,8 +1,10 @@
-from dao.db_connection import DBConnection
+from src.utils.singleton import Singleton
+from src.dao.db_connection import DBConnection
 from src.dao.zonage_dao import ZonageDao
+from src.business_object.IRIS import Iris
 
 
-class IrisDao(ZonageDao):
+class IrisDao(metaclass=Singleton):
     def find_by_code(self, niveau: str, code: int):
         """
         Récupère les informations d'une zone IRIS à partir de son code
@@ -30,3 +32,51 @@ class IrisDao(ZonageDao):
             f"IRIS {res['nom']} situé en"
             f"{res['niveau_superieur']}")
         return informations
+
+    def construction_IRIS(iris):
+        """
+        Construit une instance de la classe Iris à partir
+        d'un dictionnaire de données géographiques
+
+        Args:
+            arr (dict): Un dictionnaire contenant les informations de
+        l'arrondissement et incluant le code INSEE
+
+        Returns:
+            Iris: Une instance de la classe Iris
+            initialisée avec les données fournies
+
+        """
+        zone = ZonageDao.construction_zonage(iris)
+        curr_iris = Iris(
+            nom=zone.nom,
+            num_iris=iris["code_insee"],
+            perimetre=zone.perimetre,
+            creux=zone.creux,
+            edition_carte=zone.edition_carte
+        )
+        return curr_iris
+
+    def get_all_iris_in(id_com):
+        """
+        Récupère tous les iris d'une commune spécifique
+
+        Arguments:
+            id_com (int): L'identifiant de la commune
+
+        Retour:
+        list: Une liste de tous les iris de la commune,
+        """
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select * from projet.zone_geo                      "
+                    " where niveau= 'Iris' AND    "
+                    "niveau_superieur = %(id)s",
+                    {
+                        "id": id_com
+                    }
+                )
+                res = cursor.fetchall()
+                return res

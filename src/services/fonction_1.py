@@ -3,7 +3,8 @@ from src.dao.departement_dao import DepartementDao
 from src.dao.commune_dao import CommuneDao
 from src.dao.db_connection import DBConnection
 
-niveaux_possibles = ["Commune", "Département", "Région", "Arrondissement"]
+niveaux_possibles = ["Commune", "Département", "Région", "Arrondissement",
+                     "IRIS"]
 
 
 def find_by_code_insee(code_insee: str, niveau: str):
