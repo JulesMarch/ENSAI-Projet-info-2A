@@ -37,10 +37,17 @@ async def global_exception_handler(request, exc):
 
 
 @app.get("/zonageparcode/{niveau}/2024/{code_insee}")
-async def get_zone(niveau, code_insee):
+async def get_zone_par_code_insee(niveau, code_insee):
 
     print(niveau, code_insee)
     answer = find_by_code_insee(str(code_insee), niveau)
+    return answer
+
+
+@app.get("/zonageparnom/{niveau}/2024/{nom}")
+async def get_zone_par_nom(niveau, nom):
+    print(niveau, nom)
+    answer = find_by_nom(str(nom), niveau)
     return answer
 
 
@@ -66,13 +73,6 @@ async def find_coord(niveau: str, latitude: float, longitude: float):
         resultat_final["département"] = answer[1].nom
 
     return resultat_final
-
-
-@app.get("/zonageparnom/{niveau}/2024/{nom}")
-async def get_nom(niveau, nom):
-    print(niveau, nom)
-    answer = find_by_nom(str(nom), niveau)
-    return answer
 
 
 @app.post("/listepoints/")

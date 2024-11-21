@@ -10,8 +10,9 @@ class RegionDao(metaclass=Singleton):
         Ajoute une région à la base de données
 
         Args:
-            zone (dict): Dictionnaire contenant les informations de la région 
-            avec les clés "NOM" (nom de la région), "INSEE_REG" (code INSEE de la région)
+            zone (dict): Dictionnaire contenant les informations de la région
+             avec les clés "NOM" (nom de la région), "INSEE_REG" (code INSEE
+              de la région)
         """
 
         # if not ZonageDao.est_dans(zone):
@@ -39,14 +40,15 @@ class RegionDao(metaclass=Singleton):
             code_insee (str): Code INSEE de la zone géographique
 
         Returns:
-            dict: Informations sur le zonage, incluant son nom, niveau et code INSEE
+            dict: Informations sur le zonage, incluant son nom, niveau et
+             code INSEE
         """
 
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "select * from projet.zone_geo                          "
-                    " where code_insee=%(code_insee)s                       ",
+                    " where code_insee=%(code_insee)s and niveau='Région'   ",
                     {
                         "code_insee": code_insee
                     },
@@ -74,14 +76,14 @@ class RegionDao(metaclass=Singleton):
         Récupère toutes les régions de la base de données
 
         Returns:
-            list: Liste des régions, chaque élément contenant 
-            les informations de la région
+            list: Liste des régions, chaque élément contenant
+             les informations de la région
         """
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "select * from projet.zone_geo                      "
-                    " where niveau= 'Région'           ",
+                    " where niveau= 'Région'                            ",
                 )
                 res = cursor.fetchall()
                 return res
@@ -91,11 +93,11 @@ class RegionDao(metaclass=Singleton):
         Construit un objet Région à partir des données fournies
 
         Args:
-            reg (dict): Dictionnaire contenant les informations de la région, 
+            reg (dict): Dictionnaire contenant les informations de la région,
 
         Returns:
-            Region: Objet représentant la région avec ses attributs 
-            (nom, numéro, périmètre, etc.)
+            Region: Objet représentant la région avec ses attributs
+             (nom, numéro, périmètre, etc.)
         """
         zone = ZonageDao.construction_zonage(reg)
         curr_reg = Region(

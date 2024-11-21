@@ -10,8 +10,8 @@ niveaux_possibles = ["Commune", "Département", "Région"]
 
 def find_by_coord(longitude: float, latitude: float, niveau: str):
     """
-    Recherche un zonage basé sur les coordonnées géographiques (longitude, latitude) 
-    et le niveau spécifié
+    Recherche un zonage basé sur les coordonnées géographiques
+     (longitude, latitude) et le niveau spécifié
 
     Args:
         longitude (float): La longitude de la position à rechercher
@@ -19,13 +19,13 @@ def find_by_coord(longitude: float, latitude: float, niveau: str):
         niveau (str): Le niveau géographique
 
     Returns:
-        dict: Dictionnaire contenant les informations de la zone correspondant 
+        dict: Dictionnaire contenant les informations de la zone correspondant
         aux coordonnées fournies
 
     Raise:
         ValueError: Si le niveau fourni n'est pas valide
     """
-    
+
     if niveau not in niveaux_possibles:
         raise ValueError(f'Le niveau doit être dans {niveaux_possibles}')
 
@@ -39,9 +39,8 @@ def find_by_coord(longitude: float, latitude: float, niveau: str):
         return find_commune(longitude, latitude)
 
 
-
 def find_region(x: float, y: float):
-        """
+    """
     Recherche une région en fonction des coordonnées géographiques (x, y)
 
     Args:
@@ -49,10 +48,11 @@ def find_region(x: float, y: float):
         y (float): La latitude du point à vérifier
 
     Returns:
-        Region: L'objet région correspondant au point si le point appartient à une région
+        Region: L'objet région correspondant au point si le point appartient
+         à une région
 
     Raise:
-        ValueError: Si le point n'est pas situé en France 
+        ValueError: Si le point n'est pas situé en France
         (n'appartient à aucune région)
     """
     pt_depart = Point(x=x, y=y)
@@ -76,11 +76,11 @@ def find_departement(x: float, y: float):
         y (float): La latitude du point à vérifier
 
     Returns:
-        Region: L'objet département correspondant au point si le point 
+        Region: L'objet département correspondant au point si le point
         appartient à un département
 
     Raise:
-        ValueError: Si le point n'est pas situé en France 
+        ValueError: Si le point n'est pas situé en France
         (n'appartient à aucun département)
     """
     pt_depart = Point(x=x, y=y)
@@ -99,7 +99,8 @@ def find_departement(x: float, y: float):
 
 def find_commune(x: float, y: float):
     """
-    Recherche une commune en fonction des coordonnées géographiques (x, y) et du département
+    Recherche une commune en fonction des coordonnées géographiques (x, y)
+     et du département
 
     Args:
         x (float): La longitude du point à vérifier
@@ -110,7 +111,8 @@ def find_commune(x: float, y: float):
         correspondants si le point appartient à une commune
 
     Raise:
-        ValueError: Si le point n'est pas situé en France ou n'appartient à aucune commune
+        ValueError: Si le point n'est pas situé en France ou n'appartient
+         à aucune commune
     """
     pt_depart = Point(x=x, y=y)
 
