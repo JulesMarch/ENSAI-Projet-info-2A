@@ -1,2 +1,5 @@
+# Importation des routes principales pour les rendre accessibles depuis le module
 from .routes import router
-from .database import get_db
+
+__all__ = ["router"]
+
