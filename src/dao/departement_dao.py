@@ -35,7 +35,8 @@ class DepartementDao(metaclass=Singleton):
 
     def find_by_code_insee(code_insee: str):
         """
-        Trouve un zonage dans la base de données en utilisant un nom et un niveau géographique
+        Trouve un zonage dans la base de données en utilisant un nom
+         et un niveau géographique
 
        Args:
         code_insee (str): Code INSEE de la zone à rechercher.
@@ -85,6 +86,7 @@ class DepartementDao(metaclass=Singleton):
          dict: Dictionnaire contenant les informations de la zone,
               incluant le nom, le niveau, le code INSEE, et la région
         """
+
         resultat_final = None
 
         with DBConnection().connection as connection:
