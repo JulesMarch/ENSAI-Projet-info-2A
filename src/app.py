@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
-from typing import List
-from typing import Tuple
+from typing import List, Tuple
 import uvicorn
 
+from src.utils.conversion import Conversion
 from src.services.fonction_1 import find_by_code_insee, find_by_nom
 from src.services.fonction_2 import find_by_coord
 
@@ -55,11 +55,17 @@ async def find_coord(
     niveau: str,
     lat: float = Query(..., description="Latitude du point"),
     long: float = Query(..., description="Longitude du point"),
-    annee: int = Query(..., description="Année de la recherche")
+    annee: int = Query(..., description="Année de la recherche"),
+    type_coord: str = "GPS"
         ):
-    answer = find_by_coord(float(long), float(lat), niveau)
+    orig_lat, orig_long = lat, long
+    if type_coord == "Lambert":
+        orig_lat, orig_long = lat, long
+        long, lat = Conversion.lambert93_into_gps(long, lat)
+        print(long, lat)
+    answer = find_by_coord(long, lat, niveau)
     resultat_final = {
-        "coordonées": (float(lat), float(long)),
+        "coordonées": (orig_lat, orig_long),
         "niveau": niveau,
     }
     if niveau == "Région":

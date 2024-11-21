@@ -53,7 +53,7 @@ def find_by_nom(nom: str, niveau: str):
         avec les clés "nom", "niveau", "code_insee", et "niveau_superieur"
 
     Raise:
-        ValueError: Si le niveau fourni n'est pas valide ou si aucun 
+        ValueError: Si le niveau fourni n'est pas valide ou si aucun
          zonage n'est trouvé pour le nom et le niveau spécifiés
     """
 
