@@ -35,7 +35,7 @@ class TestFonction2():
         y = pytest.tour_eiffel.y
 
         # WHEN
-        resultat = F2.find_departement(x, y)
+        resultat = F2.find_commune(x, y)
 
         # THEN
         assert resultat[0].nom == "Paris"
