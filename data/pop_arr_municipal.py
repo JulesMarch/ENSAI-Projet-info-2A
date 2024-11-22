@@ -26,7 +26,7 @@ with fiona.open(
         geometry = arrondissement['geometry']
 
         # Remplissage des informations liées à la commune
-        ArrondissementDao.add_arrondissement(properties)
+        ArrondissementDao.add_arrondissement(properties, 2023)
 
         # Remplissage des contours geographiques du département
         ComposanteConnexeDao.add_composante_connexe(

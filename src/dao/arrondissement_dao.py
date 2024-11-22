@@ -5,7 +5,7 @@ from src.business_object.arrondissement import Arrondissement
 
 
 class ArrondissementDao(metaclass=Singleton):
-    def add_arrondissement(zone: dict):
+    def add_arrondissement(zone: dict, annee: int):
         """
         Ajoute une région à la base de données
 
@@ -18,15 +18,17 @@ class ArrondissementDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "insert into projet.zone_geo (nom,   "
-                    "niveau, code_insee, niveau_superieur) VALUES"
-                    " (%(nom)s, %(niveau)s,          "
-                    " %(code_insee)s, %(niveau_superieur)s)  ",
+                    "insert into projet.zone_geo (nom, nom_majuscule,   "
+                    "niveau, code_insee, niveau_superieur, annee) VALUES"
+                    " (%(nom)s, %(nom_majuscule)s, %(niveau)s,          "
+                    " %(code_insee)s, %(niveau_superieur)s, %(annee)s)  ",
                     {
                         "nom": zone["NOM"],
+                        "nom_majuscule": zone["NOM_M"],
                         "niveau": "Arrondissement",
                         "code_insee": zone["INSEE_ARM"],
-                        "niveau_superieur": zone["INSEE_COM"]
+                        "niveau_superieur": zone["INSEE_COM"],
+                        "annee": annee
                     },
                 )
 
