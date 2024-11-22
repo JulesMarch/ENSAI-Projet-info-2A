@@ -1,6 +1,9 @@
+import unicodedata
+
 from src.dao.db_connection import DBConnection
 from src.dao.zonage_dao import ZonageDao
 from src.business_object.IRIS import Iris
+from src.dao.commune_dao import CommuneDao
 
 
 class IrisDao(ZonageDao):
@@ -10,15 +13,25 @@ class IrisDao(ZonageDao):
             (works only if the zone is not already in the database)
         """
 
+        # On convertit le nom en majuscule
+        nom_maj = zone["NOM_IRIS"].upper()
+
+        # On retire les accents
+        nom__maj_sans_accents = ''.join(
+            c for c in unicodedata.normalize('NFD', nom_maj)
+            if unicodedata.category(c) != 'Mn'
+        )
+
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "insert into projet.zone_geo (nom, nom_majuscule,   "
                     "niveau, code_insee, niveau_superieur, annee) VALUES"
-                    " (%(nom)s, upper(%(nom)s), %(niveau)s,          "
+                    " (%(nom)s, %(nom__maj_sans_accents)s, %(niveau)s,  "
                     " %(code_insee)s, %(niveau_superieur)s, %(annee)s)  ",
                     {
                         "nom": zone["NOM_IRIS"],
+                        "nom__maj_sans_accents": nom__maj_sans_accents,
                         "niveau": "Iris",
                         "code_insee": zone["CODE_IRIS"],
                         "niveau_superieur": zone["INSEE_COM"],
@@ -26,7 +39,7 @@ class IrisDao(ZonageDao):
                     },
                 )
 
-    def find_by_code(self, niveau: str, code: int):
+    def find_by_code_insee(code_insee: str, annee: int):
         """
         Récupère les informations d'une zone IRIS à partir de son code
 
@@ -37,22 +50,39 @@ class IrisDao(ZonageDao):
         Returns:
             str: Description de la zone IRIS avec son nom et sa localisation
         """
-        request = (
-            f"SELECT code_insee, nom, zone_superieur"
-            f"FROM projet.zone_geo"
-            f"WHERE code_insee = {code}"
-        )
-
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
-                cursor.execute(request)
+                cursor.execute(
+                    "select * from projet.zone_geo                          "
+                    " where code_insee=%(code_insee)s and niveau='Iris'     "
+                    " and annee=%(annee)s                                   ",
+                    {
+                        "code_insee": code_insee,
+                        "annee": annee
+                    },
+                )
                 res = cursor.fetchone()
 
-        informations = (
-            f"Le code {res['code_insee']} correspond à la zone "
-            f"IRIS {res['nom']} situé en"
-            f"{res['niveau_superieur']}")
-        return informations
+        if res is None:
+            raise ValueError(
+                "Le code donné n'est associé à aucun Iris."
+            )
+
+        commune = CommuneDao.find_by_code_insee(
+            res["niveau_superieur"], annee
+        )
+
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "Commune": commune["nom"],
+            "Département": commune["Département"],
+            "Région": commune["Région"],
+            "annee": annee
+        }
+
+        return resultat_final
 
     def construction_IRIS(iris):
         """
@@ -101,3 +131,7 @@ class IrisDao(ZonageDao):
                 )
                 res = cursor.fetchall()
                 return res
+
+
+# test = IrisDao.find_by_code("352380510", 2023)
+# print(test)

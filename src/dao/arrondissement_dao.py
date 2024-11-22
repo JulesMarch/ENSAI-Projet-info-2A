@@ -32,7 +32,7 @@ class ArrondissementDao(metaclass=Singleton):
                     },
                 )
 
-    def find_by_code(self, niveau: str, code: int):
+    def find_by_code_insee(self, niveau: str, code: int):
         """
         Recherche des informations sur un arrondissement à partir de son code
         INSEE

@@ -163,5 +163,5 @@ class RegionDao(metaclass=Singleton):
         return curr_reg
 
 
-test = RegionDao.find_by_code_insee("11", 2023)
-print(test)
+# test = RegionDao.find_by_code_insee("11", 2023)
+# print(test)
