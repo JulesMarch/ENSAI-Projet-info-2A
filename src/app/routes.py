@@ -15,27 +15,27 @@ async def root():
             "aller sur http://localhost:8000/docs"}
 
 
-@router.post("/signup")
-async def user_signup(username: str, password: str):
-    return signup(username, password)
+# @router.post("/signup")
+# async def user_signup(username: str, password: str):
+#     return signup(username, password)
 
 
-@router.post("/login")
-async def login(username: str = Form(...), password: str = Form(...)):
-    print(f"Login attempt: username={username}, password={'*' * len(password)}")
+# @router.post("/login")
+# async def login(username: str = Form(...), password: str = Form(...)):
+#     print(f"Login attempt: username={username}, password={'*' * len(password)}")
 
 
-@router.get("/zonageparcode/{niveau}/2024/{code_insee}")
-async def get_zone_par_code_insee(niveau, code_insee):
+@router.get("/zonageparcode/{niveau}/{annee}/{code_insee}")
+async def get_zone_par_code_insee(niveau, code_insee, annee: int):
     print(niveau, code_insee)
-    answer = find_by_code_insee(str(code_insee), niveau)
+    answer = find_by_code_insee(str(code_insee), niveau, annee)
     return answer
 
 
-@router.get("/zonageparnom/{niveau}/2024/{nom}")
-async def get_zone_par_nom(niveau, nom):
+@router.get("/zonageparnom/{niveau}/{annee}/{nom}")
+async def get_zone_par_nom(niveau, nom, annee: int):
     print(niveau, nom)
-    answer = find_by_nom(str(nom), niveau)
+    answer = find_by_nom(str(nom), niveau, annee)
     return answer
 
 
