@@ -11,9 +11,9 @@ router = APIRouter()
 async def root():
     return {"message": "Bienvenue sur notre API ! Nous vous invitons à aller sur http://localhost:8000/docs"}
 
-@router.post("/login")
-async def login(username: str, password: str):
-    print(f"Login attempt: username={username}, password={'*' * len(password)}")
+# @router.post("/login")
+# async def login(username: str, password: str):
+#     print(f"Login attempt: username={username}, password={'*' * len(password)}")
 
 @router.get("/zonageparcode/{niveau}/{annee}/{code_insee}")
 async def get_zone_par_code_insee(
