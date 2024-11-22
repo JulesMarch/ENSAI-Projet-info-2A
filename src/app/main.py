@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from src.app.routes import router  # Routes de l'application
+from app.routes import router  # Routes de l'application
 import uvicorn
 
 # Créer l'application
