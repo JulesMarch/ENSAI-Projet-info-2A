@@ -20,9 +20,9 @@ async def root():
 #     return signup(username, password)
 
 
-# @router.post("/login")
-# async def login(username: str = Form(...), password: str = Form(...)):
-#     print(f"Login attempt: username={username}, password={'*' * len(password)}")
+@router.post("/login")
+async def login(username: str, password: str):
+    print(f"Login attempt: username={username}, password={'*' * len(password)}")
 
 
 @router.get("/zonageparcode/{niveau}/{annee}/{code_insee}")
@@ -76,6 +76,11 @@ async def find_coord(
         resultat_final["code_insee"] = answer[0].num_arr
         resultat_final["commune"] = answer[1].nom
 
+    if niveau == "IRIS":
+        resultat_final["nom"] = answer[0].nom
+        resultat_final["code_insee"] = answer[0].num_iris
+        resultat_final["commune"] = answer[1].nom
+
     return resultat_final
 
 
@@ -109,6 +114,11 @@ async def find_points_loc(points: List[Tuple[float, float, str]]):
         if niveau == "Arrondissement":
             resultat_final["nom"] = answer[0].nom
             resultat_final["code_insee"] = answer[0].num_arr
+            resultat_final["commune"] = answer[1].nom
+
+        if niveau == "IRIS":
+            resultat_final["nom"] = answer[0].nom
+            resultat_final["code_insee"] = answer[0].num_iris
             resultat_final["commune"] = answer[1].nom
 
         print("point trouvé !")

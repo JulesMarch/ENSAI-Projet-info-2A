@@ -5,8 +5,10 @@ from src.dao.region_dao import RegionDao
 from src.dao.departement_dao import DepartementDao
 from src.dao.commune_dao import CommuneDao
 from src.dao.arrondissement_dao import ArrondissementDao
+from src.dao.IRIS_dao import IrisDao
 
-niveaux_possibles = ["Commune", "Département", "Région", "Arrondissement"]
+niveaux_possibles = ["Commune", "Département", "Région", "Arrondissement",
+                     "IRIS"]
 
 
 def find_by_coord(longitude: float, latitude: float, niveau: str):
@@ -41,6 +43,9 @@ def find_by_coord(longitude: float, latitude: float, niveau: str):
 
     elif niveau == "Arrondissement":
         return find_arrondissement(longitude, latitude)
+
+    elif niveau == "Iris":
+        return find_iris(longitude, latitude)
 
 
 def find_region(x: float, y: float):
@@ -129,6 +134,8 @@ def find_commune(x: float, y: float):
     raise ValueError("Ce point n'est pas situé en France")
 
 
+# cas pour les arrondissements
+
 def find_arrondissement(x: float, y: float):
     """
     Recherche un arrondissement en fonction des coordonnées géographiques
@@ -155,6 +162,37 @@ def find_arrondissement(x: float, y: float):
         curr_arr = ArrondissementDao.construction_arrondissement(arr)
         if curr_arr.appartient_zonage(pt_depart):
             return (curr_arr, com)
+    raise ValueError("Ce point n'est pas situé en France")
+
+
+# cas pour les IRIS
+
+def find_iris(x: float, y: float):
+    """
+    Recherche un arrondissement en fonction des coordonnées géographiques
+     (x, y)
+
+    Args:
+        x (float): La longitude du point à vérifier
+        y (float): La latitude du point à vérifier
+
+    Returns:
+        tuple: Tuple contenant les objets Arrondissement et Commune
+        correspondants si le point appartient à un arrondissement
+
+    Raise:
+        ValueError: Si le point n'est pas situé en France ou n'appartient
+         à aucun arrondissement
+    """
+    pt_depart = Point(x=x, y=y)
+
+    com = find_commune(x, y)[0]
+
+    lst_iris = IrisDao.get_all_iris_in(com.code_postal)
+    for iris in lst_iris:
+        curr_iris = IrisDao.construction_IRIS(iris)
+        if curr_iris.appartient_zonage(pt_depart):
+            return (curr_iris, com)
     raise ValueError("Ce point n'est pas situé en France")
 
 # testTE = find_arrondissement(2.2945006, 48.8582599)[0].nom
