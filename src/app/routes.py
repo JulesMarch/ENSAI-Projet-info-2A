@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import List, Tuple
 from src.app.auth import get_current_user
 from src.app.models import User
+from src.app.utils import Conversion
 from src.services.fonction_1 import find_by_code_insee, find_by_nom
 from src.services.fonction_2 import find_by_coord
 import geopandas as gpd
@@ -66,40 +67,43 @@ async def get_zone_par_code_insee(
     niveau: str,
     code_insee: str,
     annee: int
-    # current_user: User = Depends(get_current_user)  # Protection par authentification
 ):
-    # print(f"Utilisateur authentifié : {current_user.username}")
-    print(niveau, code_insee)
+    print(f"Requête reçue : Niveau={niveau}, Code INSEE={code_insee}, Année={annee}")
 
     # Récupérer les données avec la fonction existante
-    answer = find_by_code_insee(str(code_insee), niveau, annee)
+    try:
+        answer = find_by_code_insee(str(code_insee), niveau, annee)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur lors de la recherche de données : {str(e)}")
 
+    # Déterminer le fichier shapefile à utiliser en fonction du niveau
     if niveau == "Région":
         shapefile_path = regions_shp
     elif niveau == "Département":
         shapefile_path = departements_shp
-
     elif niveau == "Commune":
         shapefile_path = communes_shp
-    gdf = gpd.read_file(shapefile_path)
+    else:
+        raise HTTPException(status_code=400, detail=f"Niveau {niveau} non supporté. Choisissez parmi: Département, Région, Commune.")
 
-    # Déterminer la colonne à utiliser pour le filtrage
+    # Charger les données du shapefile
+    try:
+        gdf = gpd.read_file(shapefile_path)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur lors du chargement du fichier shapefile : {str(e)}")
+
+    # Déterminer la colonne pour le filtrage
     niveau_to_column = {
         "Département": "INSEE_DEP",
         "Région": "INSEE_REG",
         "Commune": "INSEE_COM"
     }
-
-    # Vérifier si le niveau est valide
-    if niveau not in niveau_to_column:
-        return {"error": f"Niveau {niveau} non supporté. Choisissez parmi: Département, Région, Commune."}
-
-    # Utiliser la colonne correspondante pour le filtrage
     column_name = niveau_to_column[niveau]
-    highlighted_zone = gdf[gdf[column_name] == code_insee]
 
+    # Filtrer les données pour trouver la zone correspondante
+    highlighted_zone = gdf[gdf[column_name] == code_insee]
     if highlighted_zone.empty:
-        return {"error": f"Aucune zone trouvée pour le code INSEE {code_insee}"}
+        raise HTTPException(status_code=404, detail=f"Aucune zone trouvée pour le code INSEE {code_insee} au niveau {niveau}.")
 
     # Centrer la carte sur la zone correspondante
     centroid = highlighted_zone.geometry.centroid.iloc[0]
@@ -125,10 +129,10 @@ async def get_zone_par_code_insee(
             'weight': 2,
             'fillOpacity': 0.7
         },
-        tooltip=folium.GeoJsonTooltip(fields=["INSEE", "NOM"], aliases=["Code INSEE:", "Nom:"])
+        tooltip=folium.GeoJsonTooltip(fields=["NOM", column_name], aliases=["Nom:", "Code INSEE:"])
     ).add_to(folium_map)
 
-    # Ajouter un marqueur pour le centre de la zone
+    # Ajouter un marqueur pour le centroïde
     folium.Marker(
         location=[centroid.y, centroid.x],
         popup=f"{niveau}: {highlighted_zone['NOM'].iloc[0]} (INSEE: {code_insee})"
@@ -138,7 +142,10 @@ async def get_zone_par_code_insee(
     output_dir = Path("./temp_maps")
     output_dir.mkdir(exist_ok=True)  # Créer le dossier s'il n'existe pas
     map_path = output_dir / f"map_{niveau}_{code_insee}.html"
-    folium_map.save(map_path)
+    try:
+        folium_map.save(map_path)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur lors de la sauvegarde de la carte : {str(e)}")
 
     # Retourner la carte HTML comme réponse
     return map_path.read_text(encoding='utf-8')
