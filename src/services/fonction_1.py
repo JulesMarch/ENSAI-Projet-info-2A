@@ -7,7 +7,7 @@ niveaux_possibles = ["Commune", "Département", "Région", "Arrondissement",
                      "IRIS"]
 
 
-def find_by_code_insee(code_insee: str, niveau: str):
+def find_by_code_insee(code_insee: str, niveau: str, annee: int):
     """
     Recherche un zonage dans la base de données à partir du code INSEE
     et du niveau géographique.
@@ -29,19 +29,25 @@ def find_by_code_insee(code_insee: str, niveau: str):
     if niveau not in niveaux_possibles:
         raise ValueError(f'Le niveau doit être dans {niveaux_possibles}')
 
+    if annee != 2023:
+        raise ValueError(
+            "Pour des raisons de volumétrie de données, "
+            "seule l'année 2023 est acceptée pour le moment."
+        )
+
     code_insee = str(code_insee)
 
     if niveau == "Région":
-        return RegionDao.find_by_code_insee(code_insee)
+        return RegionDao.find_by_code_insee(code_insee, annee)
 
     elif niveau == "Département":
-        return DepartementDao.find_by_code_insee(code_insee)
+        return DepartementDao.find_by_code_insee(code_insee, annee)
 
     elif niveau == "Commune":
-        return CommuneDao.find_by_code_insee(code_insee)
+        return CommuneDao.find_by_code_insee(code_insee, annee)
 
 
-def find_by_nom(nom: str, niveau: str):
+def find_by_nom(nom: str, niveau: str, annee: int):
     """
     Recherche un zonage par nom et niveau dans la base de données
 
@@ -61,27 +67,17 @@ def find_by_nom(nom: str, niveau: str):
     if niveau not in niveaux_possibles:
         raise ValueError(f'Le niveau doit être dans {niveaux_possibles}')
 
-    with DBConnection().connection as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "select * from projet.zone_geo                      "
-                " where nom=%(nom)s and niveau=%(niveau)s           ",
-                {
-                    "nom": nom,
-                    "niveau": niveau
-                },
-            )
-            res = cursor.fetchall()
+    if annee != 2023:
+        raise ValueError(
+            "Pour des raisons de volumétrie de données, "
+            "seule l'année 2023 est acceptée pour le moment."
+        )
 
-    if len(res) == 0:
-        raise ValueError("Ce nom est introuvable dans la base de données")
+    if niveau == "Région":
+        return RegionDao.find_by_nom(nom, annee)
 
-    for row in res:
-        print(row)
-        infos = {
-            "nom": row["nom"],
-            "niveau": row["niveau"],
-            "code_insee": row["code_insee"],
-            "niveau_superieur": row["niveau_superieur"]
-        }
-        return infos
+    elif niveau == "Département":
+        return DepartementDao.find_by_nom(nom, annee)
+
+    elif niveau == "Commune":
+        return CommuneDao.find_by_nom(nom, annee)

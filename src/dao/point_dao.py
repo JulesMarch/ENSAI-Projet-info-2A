@@ -66,7 +66,7 @@ class PointDao(metaclass=Singleton):
             id (int): Identifiant unique du point dans la base de données
 
         Returns:
-            Point: Objet représentant le point avec ses coordonnées (x, y), 
+            Point: Objet représentant le point avec ses coordonnées (x, y),
             None si le point n'existe pas
         """
         point = None
@@ -92,13 +92,14 @@ class PointDao(metaclass=Singleton):
 
     def get_id_point(point: tuple) -> int:
         """
-        Récupère l'identifiant d'un point dans la base de données à partir de ses coordonnées
+        Récupère l'identifiant d'un point dans la base de données à partir
+         de ses coordonnées
 
         Args:
             point (tuple): Coordonnées du point sous la forme (x, y)
 
         Returns:
-            int: Identifiant unique du point dans la base de données, 
+            int: Identifiant unique du point dans la base de données,
             None si le point n'existe pas
         """
 

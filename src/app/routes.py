@@ -21,8 +21,8 @@ async def user_signup(username: str, password: str):
 
 
 @router.post("/login")
-async def user_login(username: str, password: str):
-    return login(username, password)
+async def login(username: str, password: str):
+    print(f"Login attempt: username={username}, password={'*' * len(password)}")
 
 
 @router.get("/zonageparcode/{niveau}/2024/{code_insee}")

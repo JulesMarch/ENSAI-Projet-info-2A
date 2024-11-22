@@ -26,10 +26,10 @@ with fiona.open(
         geometry = departement['geometry']
 
         # Remplissage des informations liées au département
-        DepartementDao.add_departement(properties)
+        DepartementDao.add_departement(properties, 2023)
 
         # Remplissage des contours geographiques du département
-        ComposanteConnexeDao.add_composante_connexe(
-            geometry["coordinates"],
-            geometry["type"]
-        )
+        # ComposanteConnexeDao.add_composante_connexe(
+        #     geometry["coordinates"],
+        #     geometry["type"]
+        # )

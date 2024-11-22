@@ -1,3 +1,5 @@
+import unicodedata
+
 from src.utils.singleton import Singleton
 from src.dao.db_connection import DBConnection
 from src.business_object.departement import Departement
@@ -7,7 +9,7 @@ from src.dao.zonage_dao import ZonageDao
 
 
 class DepartementDao(metaclass=Singleton):
-    def add_departement(zone: dict):
+    def add_departement(zone: dict, annee: int):
         """
         Ajoute une zone géographique à la base de donnée
 
@@ -16,24 +18,24 @@ class DepartementDao(metaclass=Singleton):
             la zone avec les clés "NOM", "INSEE_DEP", et "INSEE_REG"
         """
 
-        # if not ZonageDao.est_dans(zone):
-
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "insert into projet.zone_geo (nom, niveau,          "
-                    " code_insee, niveau_superieur) VALUES              "
-                    " (%(nom)s, %(niveau)s, %(code_insee)s,             "
-                    " %(niveau_superieur)s)                             ",
+                    "insert into projet.zone_geo (nom, nom_majuscule,   "
+                    "niveau, code_insee, niveau_superieur, annee) VALUES"
+                    " (%(nom)s, %(nom_majuscule)s, %(niveau)s,          "
+                    " %(code_insee)s, %(niveau_superieur)s, %(annee)s)  ",
                     {
                         "nom": zone["NOM"],
+                        "nom_majuscule": zone["NOM_M"],
                         "niveau": "Département",
                         "code_insee": zone["INSEE_DEP"],
-                        "niveau_superieur": zone["INSEE_REG"]
+                        "niveau_superieur": zone["INSEE_REG"],
+                        "annee": annee
                     },
                 )
 
-    def find_by_code_insee(code_insee: str):
+    def find_by_code_insee(code_insee: str, annee: int):
         """
         Trouve un zonage dans la base de données en utilisant un nom
          et un niveau géographique
@@ -49,33 +51,36 @@ class DepartementDao(metaclass=Singleton):
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "select * from projet.zone_geo                          "
-                    " where code_insee=%(code_insee)s                       ",
+                    "select * from projet.zone_geo                           "
+                    "where code_insee=%(code_insee)s and niveau='Département'"
+                    " and annee=%(annee)s                                    ",
                     {
-                        "code_insee": code_insee
+                        "code_insee": code_insee,
+                        "annee": annee
                     },
                 )
                 res = cursor.fetchone()
 
-        resultat_final = None
-
-        if res:
-
-            resultat_final = {
-                "nom": res["nom"],
-                "niveau": res["niveau"],
-                "code_insee": res["code_insee"],
-                "Région": RegionDao.find_by_code_insee(
-                    res["niveau_superieur"])["nom"]
-            }
-
-            return resultat_final
-
-        raise ValueError(
+        if res is None:
+            raise ValueError(
                 "Le code donné n'est associé à aucun Département."
             )
 
-    def find_by_nom(nom: str):
+        region = RegionDao.find_by_code_insee(
+            res["niveau_superieur"], annee
+        )["nom"]
+
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "Région": region,
+            "annee": annee
+        }
+
+        return resultat_final
+
+    def find_by_nom(nom: str, annee: int):
         """
         Recherche une zone géographique dans la base de données par son nom
 
@@ -87,32 +92,45 @@ class DepartementDao(metaclass=Singleton):
               incluant le nom, le niveau, le code INSEE, et la région
         """
 
-        resultat_final = None
+        # On convertit le nom en majuscule
+        nom = nom.upper()
+
+        # On retire les accents
+        nom_majuscule = ''.join(
+            c for c in unicodedata.normalize('NFD', nom)
+            if unicodedata.category(c) != 'Mn'
+        )
 
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "select * from projet.zone_geo                  "
-                    " where nom=%(nom)s                             ",
+                    "select * from projet.zone_geo                          "
+                    " where nom_majuscule=%(nom_majuscule)s                 "
+                    " and niveau='Département' and annee=%(annee)s          ",
                     {
-                        "nom": nom
+                        "nom_majuscule": nom_majuscule,
+                        "annee": annee
                     },
                 )
                 res = cursor.fetchone()
 
-        resultat_final = None
+        if res is None:
+            raise ValueError(
+                "Le nom donné n'est associé à aucun Département."
+            )
 
-        if res:
+        region = RegionDao.find_by_code_insee(
+            res["niveau_superieur"], annee
+        )["nom"]
 
-            resultat_final = {
-                "nom": res["nom"],
-                "niveau": res["niveau"],
-                "code_insee": res["code_insee"],
-                "Région": RegionDao.find_by_code_insee(
-                    res["niveau_superieur"])["nom"]
-            }
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "Région": region
+        }
 
-            return resultat_final
+        return resultat_final
 
     def construction_departement(dep):
         """
@@ -159,3 +177,7 @@ class DepartementDao(metaclass=Singleton):
                 )
                 res = cursor.fetchall()
                 return res
+
+
+# test = DepartementDao.find_by_code_insee("01", 2023)
+# print(test)

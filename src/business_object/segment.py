@@ -32,6 +32,14 @@ class Segment:
                 # Les droites sont parallèles
                 return False
 
+        elif a1 == 1000000000:
+            x = self.p1.x
+            y = a2*x+b2
+
+        elif a2 == 1000000000:
+            x = seg.p1.x
+            y = a1*x+b1
+
         else:
             # On calcule le point d'intersection entre les deux droites
             x = (b2-b1) / (a1-a2)

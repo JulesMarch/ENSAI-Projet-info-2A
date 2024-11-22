@@ -26,10 +26,10 @@ with fiona.open(
         geometry = region['geometry']
 
         # Remplissage des informations liées à la région
-        RegionDao.add_region(properties)
+        RegionDao.add_region(properties, 2023)
 
         # Remplissage des contours geographiques de la région
-        ComposanteConnexeDao.add_composante_connexe(
-            geometry["coordinates"],
-            geometry["type"]
-        )
+        # ComposanteConnexeDao.add_composante_connexe(
+        #     geometry["coordinates"],
+        #     geometry["type"]
+        # )

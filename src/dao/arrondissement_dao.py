@@ -5,6 +5,31 @@ from src.business_object.arrondissement import Arrondissement
 
 
 class ArrondissementDao(metaclass=Singleton):
+    def add_arrondissement(zone: dict):
+        """
+        Ajoute une région à la base de données
+
+        Args:
+            zone (dict): Dictionnaire contenant les informations de la région
+             avec les clés "NOM" (nom de la région), "INSEE_REG" (code INSEE
+              de la région)
+        """
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "insert into projet.zone_geo (nom,   "
+                    "niveau, code_insee, niveau_superieur) VALUES"
+                    " (%(nom)s, %(niveau)s,          "
+                    " %(code_insee)s, %(niveau_superieur)s)  ",
+                    {
+                        "nom": zone["NOM"],
+                        "niveau": "Arrondissement",
+                        "code_insee": zone["INSEE_ARM"],
+                        "niveau_superieur": zone["INSEE_COM"]
+                    },
+                )
+
     def find_by_code(self, niveau: str, code: int):
         """
         Recherche des informations sur un arrondissement à partir de son code
