@@ -21,7 +21,7 @@ async def user_signup(username: str, password: str):
 
 
 @router.post("/login")
-async def login(username: str = Form(...), password: str = Form(...)):
+async def login(username: str, password: str):
     print(f"Login attempt: username={username}, password={'*' * len(password)}")
 
 
