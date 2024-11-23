@@ -47,10 +47,33 @@ async def root():
             "aller sur http://localhost:8000/docs"}
 
 
+@router.post("/signup")
+def signup(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.username == user.username).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Nom d'utilisateur déjà pris")
+    
+    hashed_password = hash_password(user.password)
+    new_user = User(username=user.username, hashed_password=hashed_password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"message": "Utilisateur créé avec succès"}
+
+# Connexion et génération de JWT
 @router.post("/login")
-async def login(username: str, password: str):
-    print(f"Login attempt: username={username},"
-          f"password={'*' * len(password)}")
+def login(user: UserLogin, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.username == user.username).first()
+    if not db_user or not verify_password(user.password, db_user.hashed_password):
+        raise HTTPException(status_code=401, detail="Identifiants incorrects")
+    
+    # Générer un token JWT
+    access_token = jwt.encode(
+        {"sub": db_user.username, "exp": datetime.utcnow() + timedelta(hours=1)},
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.get("/zonageparcodesimple/{niveau}/{annee}/{code_insee}")
