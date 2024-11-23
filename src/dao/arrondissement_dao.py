@@ -1,7 +1,10 @@
 from src.utils.singleton import Singleton
 from src.dao.db_connection import DBConnection
 from src.dao.zonage_dao import ZonageDao
+from src.dao.commune_dao import CommuneDao
 from src.business_object.arrondissement import Arrondissement
+
+import unicodedata
 
 
 class ArrondissementDao(metaclass=Singleton):
@@ -32,35 +35,105 @@ class ArrondissementDao(metaclass=Singleton):
                     },
                 )
 
-    def find_by_code_insee(code: str, annee: int):
+    def find_by_code_insee(code_insee: str, annee: int):
         """
-        Recherche des informations sur un arrondissement à partir de son code
-        INSEE
+        Récupère les informations d'un Arrondissement à partir de son code
 
         Args:
-            niveau (str): Niveau géographique (ex : "commune")
-            code (int): Code INSEE de la zone à rechercher
+            code_insee (str): Code INSEE de l'Arrondissement
+            annee: Année de considération
 
         Returns:
-            str: Informations sur l'arrondissement, incluant le code INSEE,
-                 le nom de la commune et la zone supérieure.
+            str: Description de l'Arrondissemnt avec son nom et sa localisation
+        """
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select * from projet.zone_geo where                    "
+                    "code_insee=%(code_insee)s and niveau='Arrondissement'  "
+                    " and annee=%(annee)s                                   ",
+                    {
+                        "code_insee": code_insee,
+                        "annee": annee
+                    },
+                )
+                res = cursor.fetchone()
+
+        if res is None:
+            raise ValueError(
+                "Le code donné n'est associé à aucun Iris."
+            )
+
+        commune = CommuneDao.find_by_code_insee(
+            res["niveau_superieur"], annee
+        )
+
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "Commune": commune["nom"],
+            "Département": commune["Département"],
+            "Région": commune["Région"],
+            "annee": annee
+        }
+
+        return resultat_final
+
+    def find_by_nom(nom: str, annee: int):
+        """
+        Récupère les informations d'un Arrondissement à partir de son code
+
+        Args:
+            code_insee (str): Code INSEE de l'Arrondissement
+            annee: Année de considération
+
+        Returns:
+            str: Description de l'Arrondissemnt avec son nom et sa localisation
         """
 
-        request = (
-            f"SELECT code_insee, nom, zone_superieur"
-            f"FROM projet.zone_geo"
-            f"WHERE code_insee = {code}"
+        # On convertit le nom en majuscule
+        nom = nom.upper()
+
+        # On retire les accents
+        nom_majuscule = ''.join(
+            c for c in unicodedata.normalize('NFD', nom)
+            if unicodedata.category(c) != 'Mn'
         )
 
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
-                cursor.execute(request)
+                cursor.execute(
+                    "select * from projet.zone_geo where                    "
+                    "nom_majuscule=%(nom_majuscule)s and                    "
+                    "niveau='Arrondissement' and annee=%(annee)s            ",
+                    {
+                        "nom_majuscule": nom_majuscule,
+                        "annee": annee
+                    },
+                )
                 res = cursor.fetchone()
 
-        informations = (
-            f"Le code {res['code_insee']} correspond à l'arrondissement"
-            f"commune {res['nom']} situé en {res['niveau_superieur']}")
-        return informations
+        if res is None:
+            raise ValueError(
+                "Le code donné n'est associé à aucun Iris."
+            )
+
+        commune = CommuneDao.find_by_code_insee(
+            res["niveau_superieur"], annee
+        )
+
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "Commune": commune["nom"],
+            "Département": commune["Département"],
+            "Région": commune["Région"],
+            "annee": annee
+        }
+
+        return resultat_final
 
     def construction_arrondissement(arr):
         """

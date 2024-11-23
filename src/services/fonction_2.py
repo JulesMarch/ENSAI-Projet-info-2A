@@ -7,8 +7,8 @@ from src.dao.commune_dao import CommuneDao
 from src.dao.arrondissement_dao import ArrondissementDao
 from src.dao.IRIS_dao import IrisDao
 
-niveaux_possibles = ["Commune", "Département", "Région", "Arrondissement",
-                     "IRIS"]
+niveaux_possibles = [
+    "Région", "Département", "Commune", "IRIS", "Arrondissement"]
 
 
 def find_by_coord(longitude: float, latitude: float, niveau: str):

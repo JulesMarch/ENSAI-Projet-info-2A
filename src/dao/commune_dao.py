@@ -61,7 +61,7 @@ class CommuneDao(metaclass=Singleton):
 
         if res is None:
             raise ValueError(
-                "Le code donné n'est associé à aucun Commune."
+                "Le code donné n'est associé à aucune Commune."
             )
 
         departement = DepartementDao.find_by_code_insee(
@@ -117,10 +117,10 @@ class CommuneDao(metaclass=Singleton):
 
         if res is None:
             raise ValueError(
-                "Le nom donné n'est associé à aucun Iris."
+                "Le nom donné n'est associé à aucune Commune."
             )
 
-        commune = CommuneDao.find_by_code_insee(
+        departement = DepartementDao.find_by_code_insee(
             res["niveau_superieur"], annee
         )
 
@@ -128,9 +128,8 @@ class CommuneDao(metaclass=Singleton):
             "nom": res["nom"],
             "niveau": res["niveau"],
             "code_insee": res["code_insee"],
-            "Commune": commune["nom"],
-            "Département": commune["Département"],
-            "Région": commune["Région"]
+            "Département": departement["nom"],
+            "Région": departement["Région"]
         }
 
         return resultat_final

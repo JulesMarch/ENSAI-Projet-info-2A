@@ -34,32 +34,15 @@ async def login(username: str, password: str):
     print(f"Login attempt: username={username}, password={'*' * len(password)}")
 
 
-# @router.get("/zonageparcode/{niveau}/{annee}/{code_insee}")
-# async def get_zone_par_code_insee(
-#     niveau: str,
-#     code_insee: str,
-#     annee: int,
-#     # current_user: User = Depends(get_current_user)  # Protection par authentification
-# ):
-#     # print(f"Utilisateur authentifié : {current_user.username}")
-#     print(niveau, code_insee)
-
-#     # Récupérer les données avec la fonction existante
-#     answer = find_by_code_insee(str(code_insee), niveau, annee)
-
-#     # Charger le fichier shapefile correspondant
-#     if niveau == "Région":
-#         shapefile_path = regions_shp
-#     elif niveau == "Département":
-#         shapefile_path = departements_shp
-
-#     elif niveau == "Commune":
-#         shapefile_path = communes_shp
-#     gdf = gpd.read_file(shapefile_path)
-
-#      # Créer une carte interactive
-#     nom_zone = zone_contenant.iloc[0]["NOM"]  # Ajuster selon le champ contenant le nom
-#     m = folium.Map(location=[lat, long], zoom_start=8)
+@router.get("/zonageparcodesimple/{niveau}/{annee}/{code_insee}")
+async def get_zone_par_code_insee_simple(
+    niveau: str,
+    code_insee: str,
+    annee: int
+):
+    print(niveau, code_insee)
+    answer = find_by_code_insee(str(code_insee), niveau, annee)
+    return answer
 
 
 @router.get("/zonageparcode/{niveau}/{annee}/{code_insee}", response_class=HTMLResponse)
@@ -155,13 +138,52 @@ async def get_zone_par_code_insee(
 async def get_zone_par_nom(
     niveau: str,
     nom: str,
-    annee: int,
-    current_user: User = Depends(get_current_user)  # Protection par authentification
+    annee: int
 ):
-    print(f"Utilisateur authentifié : {current_user.username}")
-    print(niveau, nom)
     answer = find_by_nom(str(nom), niveau, annee)
     return answer
+
+
+@router.get("/coordonnees_simples/{niveau}")
+async def find_coord_simple(
+    niveau: str,
+    lat: float = Query(..., description="Latitude du point"),
+    long: float = Query(..., description="Longitude du point"),
+    annee: int = Query(..., description="Année de la recherche"),
+    type_coord: str = "GPS"
+):
+    # Conversion des coordonnées si nécessaire
+    orig_lat, orig_long = lat, long
+    if type_coord == "Lambert":
+        long, lat = Conversion.lambert93_into_gps(long, lat)
+        print(long, lat)
+
+    # Trouver la zone correspondant aux coordonnées
+    answer = find_by_coord(long, lat, niveau)
+    resultat_final = {
+        "coordonées": (orig_lat, orig_long),
+        "niveau": niveau,
+    }
+
+    # Ajouter les informations spécifiques à chaque niveau
+    if niveau == "Région":
+        resultat_final["nom"] = answer.nom
+        resultat_final["code_insee"] = answer.num_rgn
+
+    elif niveau == "Département":
+        resultat_final["nom"] = answer[0].nom
+        resultat_final["code_insee"] = answer[0].num_dep
+        resultat_final["région"] = answer[1].nom
+
+    elif niveau == "Commune":
+        resultat_final["nom"] = answer[0].nom
+        resultat_final["code_insee"] = answer[0].code_postal
+        resultat_final["département"] = answer[1].nom
+
+    else:
+        return {"error": "Niveau non pris en charge"}
+
+    return resultat_final
 
 
 # Définir la fonction
