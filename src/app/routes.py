@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import List, Tuple
-from src.app.auth import get_current_user
 from src.app.models import User
-from src.app.utils import Conversion
+from src.app.database import SessionLocal
+from src.app.utils import Conversion, hash_password, verify_password
 from src.services.fonction_1 import find_by_code_insee, find_by_nom
 from src.services.fonction_2 import find_by_coord
 import geopandas as gpd
@@ -10,7 +10,10 @@ import folium
 from shapely.geometry import Point
 from pathlib import Path
 from fastapi.responses import HTMLResponse
-
+from models import UserCreate, UserLogin
+from sqlalchemy.orm import Session
+from jose import jwt
+from datetime import datetime, timedelta
 
 router = APIRouter()
 
