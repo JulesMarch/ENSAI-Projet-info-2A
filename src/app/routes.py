@@ -17,6 +17,18 @@ from datetime import datetime, timedelta
 
 router = APIRouter()
 
+# Secret et algorithme pour JWT
+SECRET_KEY = "your_secret_key"
+ALGORITHM = "HS256"
+
+# Dépendance pour la base de données
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 # Charger les données géographiques (ajuster les chemins selon tes fichiers)
 
