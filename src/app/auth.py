@@ -1,4 +1,3 @@
-from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status, FastAPI
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
@@ -61,7 +60,11 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expires_time = (
+        expires_delta
+        or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    expire = datetime.utcnow() + expires_time
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -89,7 +92,8 @@ app = FastAPI()
 @app.post("/token", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user = get_user(form_data.username)
-    if not user or not verify_password(form_data.password, user.hashed_password):
+    if not user or not verify_password(form_data.password,
+                                       user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",
@@ -102,7 +106,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 @app.post("/register")
 async def register(username: str, password: str, email: Optional[str] = None):
     if username in fake_users_db:
-        raise HTTPException(status_code=400, detail="Username already registered")
+        raise HTTPException(status_code=400,
+                            detail="Username already registered")
 
     fake_users_db[username] = {
         "username": username,

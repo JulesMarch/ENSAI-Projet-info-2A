@@ -4,7 +4,6 @@ from src.dao.db_connection import DBConnection
 from src.dao.zonage_dao import ZonageDao
 from src.business_object.IRIS import Iris
 from src.dao.commune_dao import CommuneDao
-from src.utils.conversion import Conversion
 
 
 class IrisDao(ZonageDao):

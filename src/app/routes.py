@@ -1,5 +1,4 @@
-
-from fastapi import APIRouter, HTTPException, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import List, Tuple
 from src.app.auth import get_current_user
 from src.app.models import User
@@ -20,19 +19,38 @@ router = APIRouter()
 
 script_dir = Path(__file__).resolve()
 
-regions_shp = script_dir.parents[4] / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03" / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03" / "ADMIN-EXPRESS-COG" / "1_DONNEES_LIVRAISON_2023-05-03" / "ADECOG_3-2_SHP_WGS84G_FRA" / "REGION.shp"
-departements_shp = script_dir.parents[4] / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03" / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03" / "ADMIN-EXPRESS-COG" / "1_DONNEES_LIVRAISON_2023-05-03" / "ADECOG_3-2_SHP_WGS84G_FRA" / "DEPARTEMENT.shp"
-communes_shp = script_dir.parents[4] / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03" / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03" / "ADMIN-EXPRESS-COG" / "1_DONNEES_LIVRAISON_2023-05-03" / "ADECOG_3-2_SHP_WGS84G_FRA" / "COMMUNE.shp"
+regions_shp = (
+    script_dir.parents[4] / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03"
+    / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03"
+    / "ADMIN-EXPRESS-COG"
+    / "1_DONNEES_LIVRAISON_2023-05-03"
+    / "ADECOG_3-2_SHP_WGS84G_FRA"
+    / "REGION.shp"
+)
+departements_shp = (
+    script_dir.parents[4] / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03"
+    / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03"
+    / "ADMIN-EXPRESS-COG" / "1_DONNEES_LIVRAISON_2023-05-03"
+    / "ADECOG_3-2_SHP_WGS84G_FRA" / "DEPARTEMENT.shp"
+)
+communes_shp = (
+    script_dir.parents[4] / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03"
+    / "ADMIN-EXPRESS-COG_3-2__SHP_WGS84G_FRA_2023-05-03"
+    / "ADMIN-EXPRESS-COG" / "1_DONNEES_LIVRAISON_2023-05-03"
+    / "ADECOG_3-2_SHP_WGS84G_FRA" / "COMMUNE.shp"
+)
 
 
 @router.get("/")
 async def root():
-    return {"message": "Bienvenue sur notre API ! Nous vous invitons à aller sur http://localhost:8000/docs"}
+    return {"message": "Bienvenue sur notre API ! Nous vous invitons à"
+            "aller sur http://localhost:8000/docs"}
 
 
 @router.post("/login")
 async def login(username: str, password: str):
-    print(f"Login attempt: username={username}, password={'*' * len(password)}")
+    print(f"Login attempt: username={username},"
+          f"password={'*' * len(password)}")
 
 
 @router.get("/zonageparcodesimple/{niveau}/{annee}/{code_insee}")
@@ -46,19 +64,24 @@ async def get_zone_par_code_insee_simple(
     return answer
 
 
-@router.get("/zonageparcode/{niveau}/{annee}/{code_insee}", response_class=HTMLResponse)
+@router.get("/zonageparcode/{niveau}/{annee}/{code_insee}",
+            response_class=HTMLResponse)
 async def get_zone_par_code_insee(
     niveau: str,
     code_insee: str,
     annee: int
 ):
-    print(f"Requête reçue : Niveau={niveau}, Code INSEE={code_insee}, Année={annee}")
+    print(f"Requête reçue : Niveau={niveau}, Code INSEE={code_insee},"
+          f"Année={annee}")
 
     # Récupérer les données avec la fonction existante
     try:
         answer = find_by_code_insee(str(code_insee), niveau, annee)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur lors de la recherche de données : {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur lors de la recherche de données : {str(e)}"
+        )
 
     # Déterminer le fichier shapefile à utiliser en fonction du niveau
     if niveau == "Région":
@@ -68,14 +91,24 @@ async def get_zone_par_code_insee(
     elif niveau == "Commune":
         shapefile_path = communes_shp
     else:
-        raise HTTPException(status_code=400, detail=f"Niveau {niveau} non supporté. Choisissez parmi: Département, Région, Commune.")
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Niveau {niveau} non supporté."
+                f"Choisissez parmi: Département, Région, Commune."
+            )
+        )
 
     # Charger les données du shapefile
     try:
         gdf = gpd.read_file(shapefile_path)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur lors du chargement du fichier shapefile : {str(e)}")
-
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                f"Erreur lors du chargement du fichier shapefile : {str(e)}"
+            )
+        )
     # Déterminer la colonne pour le filtrage
     niveau_to_column = {
         "Département": "INSEE_DEP",
@@ -87,7 +120,9 @@ async def get_zone_par_code_insee(
     # Filtrer les données pour trouver la zone correspondante
     highlighted_zone = gdf[gdf[column_name] == code_insee]
     if highlighted_zone.empty:
-        raise HTTPException(status_code=404, detail=f"Aucune zone trouvée pour le code INSEE {code_insee} au niveau {niveau}.")
+        raise HTTPException(status_code=404,
+                            detail="Aucune zone trouvée pour le code INSEE"
+                            f"{code_insee} au niveau {niveau}.")
 
     # Centrer la carte sur la zone correspondante
     centroid = highlighted_zone.geometry.centroid.iloc[0]
@@ -113,13 +148,19 @@ async def get_zone_par_code_insee(
             'weight': 2,
             'fillOpacity': 0.7
         },
-        tooltip=folium.GeoJsonTooltip(fields=["NOM", column_name], aliases=["Nom:", "Code INSEE:"])
+        tooltip=(
+            folium.GeoJsonTooltip(fields=["NOM", column_name],
+                                  aliases=["Nom:", "Code INSEE:"])
+            )
     ).add_to(folium_map)
 
     # Ajouter un marqueur pour le centroïde
     folium.Marker(
         location=[centroid.y, centroid.x],
-        popup=f"{niveau}: {highlighted_zone['NOM'].iloc[0]} (INSEE: {code_insee})"
+        popup=(
+            f"{niveau}: {highlighted_zone['NOM'].iloc[0]}"
+            f"(INSEE: {code_insee})"
+        )
     ).add_to(folium_map)
 
     # Sauvegarder la carte dans un fichier HTML temporaire
@@ -129,7 +170,10 @@ async def get_zone_par_code_insee(
     try:
         folium_map.save(map_path)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur lors de la sauvegarde de la carte : {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur lors de la sauvegarde de la carte : {str(e)}"
+        )
 
     # Retourner la carte HTML comme réponse
     return map_path.read_text(encoding='utf-8')
@@ -266,7 +310,7 @@ async def find_coord(
         return {"error": "Aucune zone trouvée pour ces coordonnées"}
 
     # Créer une carte interactive
-    nom_zone = zone_contenant.iloc[0]["NOM"]  # Ajuster selon le champ contenant le nom
+    nom_zone = zone_contenant.iloc[0]["NOM"]  # Ajuster selon le champ du nom
     m = folium.Map(location=[lat, long], zoom_start=8)
 
     # Ajouter le point sur la carte
@@ -279,9 +323,15 @@ async def find_coord(
     # Ajouter les polygones avec la zone surlignée
     def style_function(feature):
         if feature["properties"]["NOM"] == nom_zone:
-            return {"fillColor": "red", "color": "black", "weight": 2, "fillOpacity": 0.7}
+            return {"fillColor": "red",
+                    "color": "black",
+                    "weight": 2,
+                    "fillOpacity": 0.7}
         else:
-            return {"fillColor": "lightgray", "color": "black", "weight": 1, "fillOpacity": 0.5}
+            return {"fillColor": "lightgray",
+                    "color": "black",
+                    "weight": 1,
+                    "fillOpacity": 0.5}
 
     folium.GeoJson(
         data=gdf,
@@ -303,7 +353,7 @@ async def find_coord(
 @router.post("/listepoints/")
 async def find_points_loc(
     points: List[Tuple[float, float, str]],
-    #vcurrent_user: User = Depends(get_current_user)  # Protection par authentification
+    # current_user: User = Depends(get_current_user)  # Protection
 ):
     # print(f"Utilisateur authentifié : {current_user.username}")
     dic_retour = {}
@@ -346,5 +396,7 @@ async def find_points_loc(
 
             dic_retour[f"Point {i + 1}"] = resultat_final
         except Exception as e:
-            dic_retour[f"Point {i + 1}"] = {"error": "Point introuvable", "detail": str(e)}
+            dic_retour[f"Point {i + 1}"] = (
+                {"error": "Point introuvable", "detail": str(e)}
+            )
     return dic_retour

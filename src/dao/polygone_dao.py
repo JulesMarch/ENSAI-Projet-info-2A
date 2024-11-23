@@ -11,7 +11,8 @@ class PolygoneDao(metaclass=Singleton):
         Ajoute un polygone à la base de données en associant ses points
 
         Args:
-            L (list): Liste des points du polygone, chaque point étant un tuple (x, y).
+            L (list): Liste des points du polygone, chaque point étant un
+            tuple (x, y).
         """
 
         with DBConnection().connection as connection:

@@ -5,7 +5,8 @@
 # DATABASE_URL = "sqlite:///./test.db"
 
 # Base = declarative_base()
-# engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+# engine = create_engine(DATABASE_URL,
+#                        connect_args={"check_same_thread": False})
 # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -14,6 +15,7 @@
 #     id = Column(Integer, primary_key=True, index=True)
 #     username = Column(String, unique=True, index=True, nullable=False)
 #     hashed_password = Column(String, nullable=False)
+
 
 # Base.metadata.create_all(bind=engine)
 
@@ -26,4 +28,3 @@
 #     finally:
 #         print("Fermeture de la session de base de données")  # Debug
 #         db.close()
-
