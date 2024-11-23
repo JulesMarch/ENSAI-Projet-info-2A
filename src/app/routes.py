@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import List, Tuple
 from src.app.models import User
