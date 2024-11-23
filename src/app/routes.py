@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, HTTPException, Depends, Query
 from typing import List, Tuple
 from src.app.auth import get_current_user
 from src.app.models import User
@@ -226,11 +226,13 @@ async def find_coord(
     if niveau == "Région":
         resultat_final["nom"] = answer.nom
         resultat_final["code_insee"] = answer.num_rgn
+        shapefile_path = regions_shp
 
     elif niveau == "Département":
         resultat_final["nom"] = answer[0].nom
         resultat_final["code_insee"] = answer[0].num_dep
         resultat_final["région"] = answer[1].nom
+        shapefile_path = departements_shp
 
     elif niveau == "Commune":
         resultat_final["nom"] = answer[0].nom

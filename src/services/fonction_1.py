@@ -4,10 +4,10 @@ from src.dao.commune_dao import CommuneDao
 from src.dao.arrondissement_dao import ArrondissementDao
 from src.dao.IRIS_dao import IrisDao
 
-from src.dao.db_connection import DBConnection
 
-niveaux_possibles = ["Commune", "Département", "Région", "Arrondissement",
-                     "Iris"]
+niveaux_possibles = [
+    "Région", "Département", "Commune", "Iris", "Arrondissement"
+]
 
 
 def find_by_code_insee(code_insee: str, niveau: str, annee: int):
@@ -91,6 +91,12 @@ def find_by_nom(nom: str, niveau: str, annee: int):
     elif niveau == "Commune":
         return CommuneDao.find_by_nom(nom, annee)
 
+    elif niveau == "Iris":
+        return IrisDao.find_by_nom(nom, annee)
 
-# test = find_by_code_insee("07", "Département", 2023)
-# print(test)
+    elif niveau == "Arrondissement":
+        return ArrondissementDao.find_by_nom(nom, annee)
+
+
+test = find_by_nom("aRiEge", "Département", 2023)
+print(test)

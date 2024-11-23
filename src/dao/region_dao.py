@@ -23,14 +23,14 @@ class RegionDao(metaclass=Singleton):
                     "insert into projet.zone_geo (nom, nom_majuscule,   "
                     "niveau, code_insee, niveau_superieur, annee) VALUES"
                     " (%(nom)s, %(nom_majuscule)s, %(niveau)s,          "
-                    " %(code_insee)s, %(niveau_superieur)s, %(annee)s)  ",
+                    " %(code_insee)s, %(niveau_superieur)s, %(année)s)  ",
                     {
                         "nom": zone["NOM"],
                         "nom_majuscule": zone["NOM_M"],
                         "niveau": "Région",
                         "code_insee": zone["INSEE_REG"],
                         "niveau_superieur": "Null",
-                        "annee": annee
+                        "année": annee
                     },
                 )
 
@@ -70,7 +70,7 @@ class RegionDao(metaclass=Singleton):
             "nom": res["nom"],
             "niveau": res["niveau"],
             "code_insee": res["code_insee"],
-            "annee": annee
+            "année": annee
         }
 
         return resultat_final
@@ -119,7 +119,7 @@ class RegionDao(metaclass=Singleton):
             "nom": res["nom"],
             "niveau": res["niveau"],
             "code_insee": res["code_insee"],
-            "annee": annee
+            "année": annee
         }
 
         return resultat_final

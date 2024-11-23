@@ -85,6 +85,61 @@ class IrisDao(ZonageDao):
 
         return resultat_final
 
+    def find_by_nom(nom: str, annee: int):
+        """
+        Récupère les informations d'une zone IRIS à partir de son code
+
+        Args:
+            niveau (str): Niveau géographique de la zone
+            code (int): Code INSEE de la zone IRIS
+
+        Returns:
+            str: Description de la zone IRIS avec son nom et sa localisation
+        """
+
+        # On convertit le nom en majuscule
+        nom = nom.upper()
+
+        # On retire les accents
+        nom_majuscule = ''.join(
+            c for c in unicodedata.normalize('NFD', nom)
+            if unicodedata.category(c) != 'Mn'
+        )
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "select * from projet.zone_geo                          "
+                    " where nom_majuscule=%(nom_majuscule)s and niveau='Iris'"
+                    " and annee=%(annee)s                                   ",
+                    {
+                        "nom_majuscule": nom_majuscule,
+                        "annee": annee
+                    },
+                )
+                res = cursor.fetchone()
+
+        if res is None:
+            raise ValueError(
+                "Le code donné n'est associé à aucun Iris."
+            )
+
+        commune = CommuneDao.find_by_code_insee(
+            res["niveau_superieur"], annee
+        )
+
+        resultat_final = {
+            "nom": res["nom"],
+            "niveau": res["niveau"],
+            "code_insee": res["code_insee"],
+            "Commune": commune["nom"],
+            "Département": commune["Département"],
+            "Région": commune["Région"],
+            "annee": annee
+        }
+
+        return resultat_final
+
     def construction_IRIS(iris):
         """
         Construit une instance de la classe Iris à partir

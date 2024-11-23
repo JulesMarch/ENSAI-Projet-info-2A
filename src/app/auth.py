@@ -1,7 +1,4 @@
-from fastapi import HTTPException
-from src.app.database import User, get_db
 from sqlalchemy.orm import Session
-from src.app.utils import hash_password, verify_password
 from fastapi import Depends, HTTPException, status, FastAPI
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
@@ -14,20 +11,25 @@ SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+
 class User(BaseModel):
     username: str
     email: Optional[str] = None
     hashed_password: str
 
+
 class UserInDB(User):
     hashed_password: str
+
 
 class Token(BaseModel):
     access_token: str
     token_type: str
 
+
 class TokenData(BaseModel):
     username: Optional[str] = None
+
 
 # Simuler une base de données utilisateur
 fake_users_db = {
@@ -38,11 +40,14 @@ fake_users_db = {
     }
 }
 
+
 def fake_hash_password(password: str):
     return f"hashed_{password}"
 
+
 def verify_password(plain_password, hashed_password):
     return fake_hash_password(plain_password) == hashed_password
+
 
 def get_user(username: str):
     user = fake_users_db.get(username)
@@ -50,7 +55,9 @@ def get_user(username: str):
         return UserInDB(**user)
     return None
 
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -58,6 +65,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
@@ -74,7 +82,9 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=401, detail="User not found")
     return user
 
+
 app = FastAPI()
+
 
 @app.post("/token", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -88,6 +98,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
+
 @app.post("/register")
 async def register(username: str, password: str, email: Optional[str] = None):
     if username in fake_users_db:
@@ -99,6 +110,7 @@ async def register(username: str, password: str, email: Optional[str] = None):
         "hashed_password": fake_hash_password(password)
     }
     return {"message": "User registered successfully"}
+
 
 @app.get("/protected-route")
 async def protected_route(current_user: User = Depends(get_current_user)):

@@ -5,15 +5,76 @@ from src.business_object.segment import Segment
 from src.business_object.contour import Contour
 
 
-# Point
+# Région
 
 @pytest.fixture
-def point_0_kwargs():
-    return dict(x=0, y=0)
+def Region_Nouvelle_Aquitaine_kwargs():
+    return {
+        'nom': 'Nouvelle-Aquitaine',
+        'niveau': 'Région',
+        'code_insee': '75',
+        'année': 2023
+    }
 
 
-def point_1_kwargs():
-    return dict(x=100, y=0)
+@pytest.fixture
+def Region_Grand_Est_kwargs():
+    return {
+        'nom': 'Grand Est',
+        'niveau': 'Région',
+        'code_insee': '44',
+        'année': 2023
+    }
+
+
+# Département
+
+@pytest.fixture
+def Departement_Ille_et_Villaine_kwargs():
+    return {
+        'nom': 'Ille-et-Vilaine',
+        'niveau': 'Département',
+        'code_insee': '35',
+        'Région': 'Bretagne',
+        'année': 2023
+    }
+
+
+@pytest.fixture
+def Departement_Ariege_kwargs():
+    return {
+        'nom': 'Ariège',
+        'niveau': 'Département',
+        'code_insee': '09',
+        'Région': 'Occitanie',
+        'année': 2023
+    }
+
+
+# Commune
+
+@pytest.fixture
+def Commune_Rennes_kwargs():
+    return {
+        'nom': 'Rennes',
+        'niveau': 'Commune',
+        'code_insee': '35238',
+        'Département': 'Ille-et-Vilaine',
+        'Région': 'Bretagne',
+        'année': 2023
+    }
+
+
+@pytest.fixture
+def Commune_Paris_kwargs():
+    return {
+        'nom': 'Paris',
+        'niveau': 'Commune',
+        'code_insee': '75056',
+        'Département': 'Paris',
+        'Région': 'Île-de-France',
+        'année': 2023
+    }
 
 
 def point_2_kwargs():
@@ -29,8 +90,6 @@ def point_3_kwargs():
 def pytest_configure():
 
     # Point
-
-    pytest.tour_eiffel = Point(x=2.2945006, y=48.8582599)
 
     pytest.origine = Point(x=0, y=0)
 
@@ -84,3 +143,11 @@ def pytest_configure():
             )
         )
     )
+
+    # Définition de points en France
+
+    pytest.tour_eiffel = Point(x=2.2945006, y=48.8582599)
+
+    pytest.ensae = Point(x=2.2079203, y=48.7109887)
+
+    pytest.ensai = Point(x=-1.741779, y=48.050646)

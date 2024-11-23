@@ -13,3 +13,9 @@ passlib
 bcrypt
 sqlalchemy
 python-jose
+fastapi
+geopandas
+shapely
+folium
+pandas
+jinja2
