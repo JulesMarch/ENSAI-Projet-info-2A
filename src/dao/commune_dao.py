@@ -129,7 +129,8 @@ class CommuneDao(metaclass=Singleton):
             "niveau": res["niveau"],
             "code_insee": res["code_insee"],
             "Département": departement["nom"],
-            "Région": departement["Région"]
+            "Région": departement["Région"],
+            "année": annee
         }
 
         return resultat_final

@@ -98,5 +98,5 @@ def find_by_nom(nom: str, niveau: str, annee: int):
         return ArrondissementDao.find_by_nom(nom, annee)
 
 
-# test = find_by_code_insee("07", "Département", 2023)
-# print(test)
+test = find_by_nom("aRiEge", "Département", 2023)
+print(test)

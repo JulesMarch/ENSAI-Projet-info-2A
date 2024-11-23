@@ -75,7 +75,7 @@ class DepartementDao(metaclass=Singleton):
             "niveau": res["niveau"],
             "code_insee": res["code_insee"],
             "Région": region,
-            "annee": annee
+            "année": annee
         }
 
         return resultat_final
@@ -127,7 +127,8 @@ class DepartementDao(metaclass=Singleton):
             "nom": res["nom"],
             "niveau": res["niveau"],
             "code_insee": res["code_insee"],
-            "Région": region
+            "Région": region,
+            "année": annee
         }
 
         return resultat_final

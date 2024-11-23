@@ -10,12 +10,14 @@ import unicodedata
 class ArrondissementDao(metaclass=Singleton):
     def add_arrondissement(zone: dict, annee: int):
         """
-        Ajoute une région à la base de données
+        Ajoute un Arrondissement Municipal à la base de données.
 
         Args:
-            zone (dict): Dictionnaire contenant les informations de la région
-             avec les clés "NOM" (nom de la région), "INSEE_REG" (code INSEE
-              de la région)
+            zone (dict): Dictionnaire contenant les informations de
+             l'arrondissement avec les clés "NOM" (nom de l'arrondisement),
+              "NOM_M" (nom  en majuscule de l'arrondisement) "INSEE_ARM"
+               (code INSEE l'Arrondissement Municipal) et "INSEE_COM" (code
+                INSEE de la Commune dans laquelle se troube l'Arrondissement)
         """
 
         with DBConnection().connection as connection:
@@ -35,7 +37,7 @@ class ArrondissementDao(metaclass=Singleton):
                     },
                 )
 
-    def find_by_code_insee(code_insee: str, annee: int):
+    def find_by_code_insee(code_insee: str, annee: int) -> dict:
         """
         Récupère les informations d'un Arrondissement à partir de son code
 
@@ -44,7 +46,7 @@ class ArrondissementDao(metaclass=Singleton):
             annee: Année de considération
 
         Returns:
-            str: Description de l'Arrondissemnt avec son nom et sa localisation
+            dict: dictionnaire contenant les informations recherchées
         """
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
@@ -80,16 +82,16 @@ class ArrondissementDao(metaclass=Singleton):
 
         return resultat_final
 
-    def find_by_nom(nom: str, annee: int):
+    def find_by_nom(nom: str, annee: int) -> dict:
         """
-        Récupère les informations d'un Arrondissement à partir de son code
+        Récupère les informations d'un Arrondissement à partir de son nom.
 
         Args:
-            code_insee (str): Code INSEE de l'Arrondissement
+            nom (str): Nom de l'Arrondissement
             annee: Année de considération
 
         Returns:
-            str: Description de l'Arrondissemnt avec son nom et sa localisation
+            dict: dictionnaire contenant les informations recherchées
         """
 
         # On convertit le nom en majuscule
