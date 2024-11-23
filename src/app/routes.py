@@ -1,8 +1,9 @@
+
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import List, Tuple
-from src.app.auth import get_current_user
 from src.app.models import User
-from src.app.utils import Conversion
+from src.app.database import SessionLocal
+from src.app.utils import Conversion, hash_password, verify_password
 from src.services.fonction_1 import find_by_code_insee, find_by_nom
 from src.services.fonction_2 import find_by_coord
 import geopandas as gpd
@@ -10,9 +11,38 @@ import folium
 from shapely.geometry import Point
 from pathlib import Path
 from fastapi.responses import HTMLResponse
-
+from models import UserCreate, UserLogin
+from sqlalchemy.orm import Session
+from jose import jwt
+from datetime import datetime, timedelta
 
 router = APIRouter()
+
+# Secret et algorithme pour JWT
+SECRET_KEY = "your_secret_key"
+ALGORITHM = "HS256"
+
+# Dépendance pour la base de données
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+def get_current_user(token: str, db: Session = Depends(get_db)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        if username is None:
+            raise HTTPException(status_code=401, detail="Token invalide")
+
+        user = db.query(User).filter(User.username == username).first()
+        if user is None:
+            raise HTTPException(status_code=401, detail="Utilisateur non trouvé")
+        return user
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token invalide")
 
 
 # Charger les données géographiques (ajuster les chemins selon tes fichiers)
@@ -47,10 +77,33 @@ async def root():
             "aller sur http://localhost:8000/docs"}
 
 
+@router.post("/signup")
+def signup(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.username == user.username).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Nom d'utilisateur déjà pris")
+
+    hashed_password = hash_password(user.password)
+    new_user = User(username=user.username, hashed_password=hashed_password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"message": "Utilisateur créé avec succès"}
+
+# Connexion et génération de JWT
 @router.post("/login")
-async def login(username: str, password: str):
-    print(f"Login attempt: username={username},"
-          f"password={'*' * len(password)}")
+def login(user: UserLogin, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.username == user.username).first()
+    if not db_user or not verify_password(user.password, db_user.hashed_password):
+        raise HTTPException(status_code=401, detail="Identifiants incorrects")
+
+    # Générer un token JWT
+    access_token = jwt.encode(
+        {"sub": db_user.username, "exp": datetime.utcnow() + timedelta(hours=1)},
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.get("/zonageparcodesimple/{niveau}/{annee}/{code_insee}")
