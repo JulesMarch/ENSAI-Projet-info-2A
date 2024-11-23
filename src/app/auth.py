@@ -68,7 +68,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         token_data = TokenData(username=username)
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
-    
+
     user = get_user(token_data.username)
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
@@ -92,7 +92,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 async def register(username: str, password: str, email: Optional[str] = None):
     if username in fake_users_db:
         raise HTTPException(status_code=400, detail="Username already registered")
-    
+
     fake_users_db[username] = {
         "username": username,
         "email": email,
@@ -103,5 +103,3 @@ async def register(username: str, password: str, email: Optional[str] = None):
 @app.get("/protected-route")
 async def protected_route(current_user: User = Depends(get_current_user)):
     return {"message": f"Bonjour, {current_user.username}"}
-
-

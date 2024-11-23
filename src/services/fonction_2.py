@@ -6,9 +6,10 @@ from src.dao.departement_dao import DepartementDao
 from src.dao.commune_dao import CommuneDao
 from src.dao.arrondissement_dao import ArrondissementDao
 from src.dao.IRIS_dao import IrisDao
+from src.utils.conversion import Conversion
 
 niveaux_possibles = ["Commune", "Département", "Région", "Arrondissement",
-                     "IRIS"]
+                     "Iris"]
 
 
 def find_by_coord(longitude: float, latitude: float, niveau: str):
@@ -124,9 +125,9 @@ def find_commune(x: float, y: float):
     """
     pt_depart = Point(x=x, y=y)
 
-    dep = find_departement(x, y)[0]
+    dep = find_departement(x, y)
 
-    lst_com = CommuneDao.get_all_com_in(dep.num_dep)
+    lst_com = CommuneDao.get_all_com_in(dep[0].num_dep)
     for com in lst_com:
         curr_com = CommuneDao.construction_commune(com)
         if curr_com.appartient_zonage(pt_depart):
@@ -155,9 +156,9 @@ def find_arrondissement(x: float, y: float):
     """
     pt_depart = Point(x=x, y=y)
 
-    com = find_commune(x, y)[0]
+    com = find_commune(x, y)
 
-    lst_arr = ArrondissementDao.get_all_arr_in(com.code_postal)
+    lst_arr = ArrondissementDao.get_all_arr_in(com[0].code_postal)
     for arr in lst_arr:
         curr_arr = ArrondissementDao.construction_arrondissement(arr)
         if curr_arr.appartient_zonage(pt_depart):
@@ -184,11 +185,14 @@ def find_iris(x: float, y: float):
         ValueError: Si le point n'est pas situé en France ou n'appartient
          à aucun arrondissement
     """
+
+    com = find_commune(x, y)
+
+    x, y = Conversion.gps_into_lambert93(y, x)
+    print(x, y)
     pt_depart = Point(x=x, y=y)
 
-    com = find_commune(x, y)[0]
-
-    lst_iris = IrisDao.get_all_iris_in(com.code_postal)
+    lst_iris = IrisDao.get_all_iris_in(com[0].code_postal)
     for iris in lst_iris:
         curr_iris = IrisDao.construction_IRIS(iris)
         if curr_iris.appartient_zonage(pt_depart):

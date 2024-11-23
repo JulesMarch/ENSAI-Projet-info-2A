@@ -4,10 +4,6 @@ import uvicorn
 from src.dao.zonage_dao import ZonageDao
 
 
-test = ZonageDao.find_by_code_insee("11", "Région")
-print(test)
-
-
 # On instancie le webservice
 app = FastAPI()
 
