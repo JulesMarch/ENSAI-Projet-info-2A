@@ -25,12 +25,11 @@ with fiona.open(
         # Dictionnaire contenant les délimitations du département
         geometry = departement['geometry']
 
-        if properties["NOM_M"] == "BOUCHES-DU-RHONE":
-            # Remplissage des informations liées au département
-            DepartementDao.add_departement(properties, 2023)
+        # Remplissage des informations liées au département
+        DepartementDao.add_departement(properties, 2023)
 
-            # Remplissage des contours geographiques du département
-            ComposanteConnexeDao.add_composante_connexe(
-                geometry["coordinates"],
-                geometry["type"]
-            )
+        # Remplissage des contours geographiques du département
+        ComposanteConnexeDao.add_composante_connexe(
+            geometry["coordinates"],
+            geometry["type"]
+        )

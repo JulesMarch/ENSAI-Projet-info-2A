@@ -25,12 +25,11 @@ with fiona.open(
         # Dictionnaire contenant les délimitations de la commune
         geometry = commune['geometry']
 
-        if properties["NOM_M"] == "LYON":
-            # Remplissage des informations liées à la commune
-            CommuneDao.add_commune(properties, 2023)
+        # Remplissage des informations liées à la commune
+        CommuneDao.add_commune(properties, 2023)
 
-            # Remplissage des contours geographiques de la commune
-            ComposanteConnexeDao.add_composante_connexe(
-                geometry["coordinates"],
-                geometry["type"]
-            )
+        # Remplissage des contours geographiques de la commune
+        ComposanteConnexeDao.add_composante_connexe(
+            geometry["coordinates"],
+            geometry["type"]
+        )

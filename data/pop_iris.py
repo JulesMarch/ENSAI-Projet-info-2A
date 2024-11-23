@@ -24,12 +24,11 @@ with fiona.open(
         # Dictionnaire contenant les délimitations l'iris
         geometry = iris['geometry']
 
-        if properties["INSEE_COM"] == "35238":
-            # Remplissage des informations liées l'iris
-            IrisDao.add_iris(properties, 2023)
+        # Remplissage des informations liées l'iris
+        IrisDao.add_iris(properties, 2023)
 
-            # Remplissage des contours geographiques de l'iris
-            ComposanteConnexeDao.add_composante_connexe(
-                geometry["coordinates"],
-                geometry["type"]
-            )
+        # Remplissage des contours geographiques de l'iris
+        ComposanteConnexeDao.add_composante_connexe(
+            geometry["coordinates"],
+            geometry["type"]
+        )
